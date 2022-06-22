@@ -1,6 +1,19 @@
 {
-  "extends": [
-    "oclif",
-    "oclif-typescript"
-  ]
+  "extends": ["oclif", "oclif-typescript"],
+  "rules": {
+    "indent": [
+      2,
+      2,
+      {
+        "SwitchCase": 1
+      }
+    ],
+    "arrow-parens": "off",
+    "node/no-extraneous-import": [
+      "error",
+      {
+        "allowModules": ["crypto-js"]
+      }
+    ]
+  }
 }

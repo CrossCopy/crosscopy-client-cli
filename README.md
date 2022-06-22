@@ -17,38 +17,41 @@ oclif example Hello World CLI
 <!-- usage -->
 ```sh-session
 $ npm install -g crosscopy
-$ cpy COMMAND
+$ xcopy COMMAND
 running command...
-$ cpy (--version)
+$ xcopy (--version)
 crosscopy/0.0.0 darwin-arm64 node-v16.14.2
-$ cpy --help [COMMAND]
+$ xcopy --help [COMMAND]
 USAGE
-  $ cpy COMMAND
+  $ xcopy COMMAND
 ...
 ```
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`cpy hello PERSON`](#cpy-hello-person)
-* [`cpy hello world`](#cpy-hello-world)
-* [`cpy help [COMMAND]`](#cpy-help-command)
-* [`cpy plugins`](#cpy-plugins)
-* [`cpy plugins:install PLUGIN...`](#cpy-pluginsinstall-plugin)
-* [`cpy plugins:inspect PLUGIN...`](#cpy-pluginsinspect-plugin)
-* [`cpy plugins:install PLUGIN...`](#cpy-pluginsinstall-plugin-1)
-* [`cpy plugins:link PLUGIN`](#cpy-pluginslink-plugin)
-* [`cpy plugins:uninstall PLUGIN...`](#cpy-pluginsuninstall-plugin)
-* [`cpy plugins:uninstall PLUGIN...`](#cpy-pluginsuninstall-plugin-1)
-* [`cpy plugins:uninstall PLUGIN...`](#cpy-pluginsuninstall-plugin-2)
-* [`cpy plugins update`](#cpy-plugins-update)
+- [oclif-hello-world](#oclif-hello-world)
+- [Usage](#usage)
+- [Commands](#commands)
+  - [`xcopy hello PERSON`](#xcopy-hello-person)
+  - [`xcopy hello world`](#xcopy-hello-world)
+  - [`xcopy help [COMMAND]`](#xcopy-help-command)
+  - [`xcopy plugins`](#xcopy-plugins)
+  - [`xcopy plugins:install PLUGIN...`](#xcopy-pluginsinstall-plugin)
+  - [`xcopy plugins:inspect PLUGIN...`](#xcopy-pluginsinspect-plugin)
+  - [`xcopy plugins:install PLUGIN...`](#xcopy-pluginsinstall-plugin-1)
+  - [`xcopy plugins:link PLUGIN`](#xcopy-pluginslink-plugin)
+  - [`xcopy plugins:uninstall PLUGIN...`](#xcopy-pluginsuninstall-plugin)
+  - [`xcopy plugins:uninstall PLUGIN...`](#xcopy-pluginsuninstall-plugin-1)
+  - [`xcopy plugins:uninstall PLUGIN...`](#xcopy-pluginsuninstall-plugin-2)
+  - [`xcopy plugins update`](#xcopy-plugins-update)
 
-## `cpy hello PERSON`
+## `xcopy hello PERSON`
 
 Say hello
 
 ```
 USAGE
-  $ cpy hello [PERSON] -f <value>
+  $ xcopy hello [PERSON] -f <value>
 
 ARGUMENTS
   PERSON  Person to say hello to
@@ -66,13 +69,13 @@ EXAMPLES
 
 _See code: [dist/commands/hello/index.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.0/dist/commands/hello/index.ts)_
 
-## `cpy hello world`
+## `xcopy hello world`
 
 Say hello world
 
 ```
 USAGE
-  $ cpy hello world
+  $ xcopy hello world
 
 DESCRIPTION
   Say hello world
@@ -82,13 +85,13 @@ EXAMPLES
   hello world! (./src/commands/hello/world.ts)
 ```
 
-## `cpy help [COMMAND]`
+## `xcopy help [COMMAND]`
 
-Display help for cpy.
+Display help for xcopy.
 
 ```
 USAGE
-  $ cpy help [COMMAND] [-n]
+  $ xcopy help [COMMAND] [-n]
 
 ARGUMENTS
   COMMAND  Command to show help for.
@@ -97,18 +100,18 @@ FLAGS
   -n, --nested-commands  Include all nested commands in the output.
 
 DESCRIPTION
-  Display help for cpy.
+  Display help for xcopy.
 ```
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v5.1.10/src/commands/help.ts)_
 
-## `cpy plugins`
+## `xcopy plugins`
 
 List installed plugins.
 
 ```
 USAGE
-  $ cpy plugins [--core]
+  $ xcopy plugins [--core]
 
 FLAGS
   --core  Show core plugins.
@@ -117,18 +120,18 @@ DESCRIPTION
   List installed plugins.
 
 EXAMPLES
-  $ cpy plugins
+  $ xcopy plugins
 ```
 
 _See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v2.0.11/src/commands/plugins/index.ts)_
 
-## `cpy plugins:install PLUGIN...`
+## `xcopy plugins:install PLUGIN...`
 
 Installs a plugin into the CLI.
 
 ```
 USAGE
-  $ cpy plugins:install PLUGIN...
+  $ xcopy plugins:install PLUGIN...
 
 ARGUMENTS
   PLUGIN  Plugin to install.
@@ -150,23 +153,23 @@ DESCRIPTION
   the CLI without the need to patch and update the whole CLI.
 
 ALIASES
-  $ cpy plugins add
+  $ xcopy plugins add
 
 EXAMPLES
-  $ cpy plugins:install myplugin 
+  $ xcopy plugins:install myplugin 
 
-  $ cpy plugins:install https://github.com/someuser/someplugin
+  $ xcopy plugins:install https://github.com/someuser/someplugin
 
-  $ cpy plugins:install someuser/someplugin
+  $ xcopy plugins:install someuser/someplugin
 ```
 
-## `cpy plugins:inspect PLUGIN...`
+## `xcopy plugins:inspect PLUGIN...`
 
 Displays installation properties of a plugin.
 
 ```
 USAGE
-  $ cpy plugins:inspect PLUGIN...
+  $ xcopy plugins:inspect PLUGIN...
 
 ARGUMENTS
   PLUGIN  [default: .] Plugin to inspect.
@@ -179,16 +182,16 @@ DESCRIPTION
   Displays installation properties of a plugin.
 
 EXAMPLES
-  $ cpy plugins:inspect myplugin
+  $ xcopy plugins:inspect myplugin
 ```
 
-## `cpy plugins:install PLUGIN...`
+## `xcopy plugins:install PLUGIN...`
 
 Installs a plugin into the CLI.
 
 ```
 USAGE
-  $ cpy plugins:install PLUGIN...
+  $ xcopy plugins:install PLUGIN...
 
 ARGUMENTS
   PLUGIN  Plugin to install.
@@ -210,23 +213,23 @@ DESCRIPTION
   the CLI without the need to patch and update the whole CLI.
 
 ALIASES
-  $ cpy plugins add
+  $ xcopy plugins add
 
 EXAMPLES
-  $ cpy plugins:install myplugin 
+  $ xcopy plugins:install myplugin 
 
-  $ cpy plugins:install https://github.com/someuser/someplugin
+  $ xcopy plugins:install https://github.com/someuser/someplugin
 
-  $ cpy plugins:install someuser/someplugin
+  $ xcopy plugins:install someuser/someplugin
 ```
 
-## `cpy plugins:link PLUGIN`
+## `xcopy plugins:link PLUGIN`
 
 Links a plugin into the CLI for development.
 
 ```
 USAGE
-  $ cpy plugins:link PLUGIN
+  $ xcopy plugins:link PLUGIN
 
 ARGUMENTS
   PATH  [default: .] path to plugin
@@ -244,16 +247,16 @@ DESCRIPTION
   command will override the user-installed or core plugin implementation. This is useful for development work.
 
 EXAMPLES
-  $ cpy plugins:link myplugin
+  $ xcopy plugins:link myplugin
 ```
 
-## `cpy plugins:uninstall PLUGIN...`
+## `xcopy plugins:uninstall PLUGIN...`
 
 Removes a plugin from the CLI.
 
 ```
 USAGE
-  $ cpy plugins:uninstall PLUGIN...
+  $ xcopy plugins:uninstall PLUGIN...
 
 ARGUMENTS
   PLUGIN  plugin to uninstall
@@ -266,17 +269,17 @@ DESCRIPTION
   Removes a plugin from the CLI.
 
 ALIASES
-  $ cpy plugins unlink
-  $ cpy plugins remove
+  $ xcopy plugins unlink
+  $ xcopy plugins remove
 ```
 
-## `cpy plugins:uninstall PLUGIN...`
+## `xcopy plugins:uninstall PLUGIN...`
 
 Removes a plugin from the CLI.
 
 ```
 USAGE
-  $ cpy plugins:uninstall PLUGIN...
+  $ xcopy plugins:uninstall PLUGIN...
 
 ARGUMENTS
   PLUGIN  plugin to uninstall
@@ -289,17 +292,17 @@ DESCRIPTION
   Removes a plugin from the CLI.
 
 ALIASES
-  $ cpy plugins unlink
-  $ cpy plugins remove
+  $ xcopy plugins unlink
+  $ xcopy plugins remove
 ```
 
-## `cpy plugins:uninstall PLUGIN...`
+## `xcopy plugins:uninstall PLUGIN...`
 
 Removes a plugin from the CLI.
 
 ```
 USAGE
-  $ cpy plugins:uninstall PLUGIN...
+  $ xcopy plugins:uninstall PLUGIN...
 
 ARGUMENTS
   PLUGIN  plugin to uninstall
@@ -312,17 +315,17 @@ DESCRIPTION
   Removes a plugin from the CLI.
 
 ALIASES
-  $ cpy plugins unlink
-  $ cpy plugins remove
+  $ xcopy plugins unlink
+  $ xcopy plugins remove
 ```
 
-## `cpy plugins update`
+## `xcopy plugins update`
 
 Update installed plugins.
 
 ```
 USAGE
-  $ cpy plugins update [-h] [-v]
+  $ xcopy plugins update [-h] [-v]
 
 FLAGS
   -h, --help     Show CLI help.
