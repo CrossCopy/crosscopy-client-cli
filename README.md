@@ -29,21 +29,71 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-- [oclif-hello-world](#oclif-hello-world)
-- [Usage](#usage)
-- [Commands](#commands)
-  - [`xcopy hello PERSON`](#xcopy-hello-person)
-  - [`xcopy hello world`](#xcopy-hello-world)
-  - [`xcopy help [COMMAND]`](#xcopy-help-command)
-  - [`xcopy plugins`](#xcopy-plugins)
-  - [`xcopy plugins:install PLUGIN...`](#xcopy-pluginsinstall-plugin)
-  - [`xcopy plugins:inspect PLUGIN...`](#xcopy-pluginsinspect-plugin)
-  - [`xcopy plugins:install PLUGIN...`](#xcopy-pluginsinstall-plugin-1)
-  - [`xcopy plugins:link PLUGIN`](#xcopy-pluginslink-plugin)
-  - [`xcopy plugins:uninstall PLUGIN...`](#xcopy-pluginsuninstall-plugin)
-  - [`xcopy plugins:uninstall PLUGIN...`](#xcopy-pluginsuninstall-plugin-1)
-  - [`xcopy plugins:uninstall PLUGIN...`](#xcopy-pluginsuninstall-plugin-2)
-  - [`xcopy plugins update`](#xcopy-plugins-update)
+* [`xcopy .`](#xcopy-)
+* [`xcopy autocomplete [SHELL]`](#xcopy-autocomplete-shell)
+* [`xcopy hello PERSON`](#xcopy-hello-person)
+* [`xcopy hello world`](#xcopy-hello-world)
+* [`xcopy help [COMMAND]`](#xcopy-help-command)
+* [`xcopy login`](#xcopy-login)
+* [`xcopy plugins`](#xcopy-plugins)
+* [`xcopy plugins:install PLUGIN...`](#xcopy-pluginsinstall-plugin)
+* [`xcopy plugins:inspect PLUGIN...`](#xcopy-pluginsinspect-plugin)
+* [`xcopy plugins:install PLUGIN...`](#xcopy-pluginsinstall-plugin-1)
+* [`xcopy plugins:link PLUGIN`](#xcopy-pluginslink-plugin)
+* [`xcopy plugins:uninstall PLUGIN...`](#xcopy-pluginsuninstall-plugin)
+* [`xcopy plugins:uninstall PLUGIN...`](#xcopy-pluginsuninstall-plugin-1)
+* [`xcopy plugins:uninstall PLUGIN...`](#xcopy-pluginsuninstall-plugin-2)
+* [`xcopy plugins update`](#xcopy-plugins-update)
+* [`xcopy update [CHANNEL]`](#xcopy-update-channel)
+* [`xcopy upload`](#xcopy-upload)
+
+## `xcopy .`
+
+describe the command here
+
+```
+USAGE
+  $ xcopy .
+
+DESCRIPTION
+  describe the command here
+
+EXAMPLES
+  echo "content" | xcopy
+
+  $ xcopy < content.txt
+```
+
+_See code: [dist/commands/index.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.0/dist/commands/index.ts)_
+
+## `xcopy autocomplete [SHELL]`
+
+display autocomplete installation instructions
+
+```
+USAGE
+  $ xcopy autocomplete [SHELL] [-r]
+
+ARGUMENTS
+  SHELL  shell type
+
+FLAGS
+  -r, --refresh-cache  Refresh cache (ignores displaying instructions)
+
+DESCRIPTION
+  display autocomplete installation instructions
+
+EXAMPLES
+  $ xcopy autocomplete
+
+  $ xcopy autocomplete bash
+
+  $ xcopy autocomplete zsh
+
+  $ xcopy autocomplete --refresh-cache
+```
+
+_See code: [@oclif/plugin-autocomplete](https://github.com/oclif/plugin-autocomplete/blob/v1.3.0/src/commands/autocomplete/index.ts)_
 
 ## `xcopy hello PERSON`
 
@@ -104,6 +154,29 @@ DESCRIPTION
 ```
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v5.1.10/src/commands/help.ts)_
+
+## `xcopy login`
+
+Login to CrossCopy Cloud
+
+```
+USAGE
+  $ xcopy login [-e <value>] [-p <value>]
+
+FLAGS
+  -e, --email=<value>     Email
+  -p, --password=<value>  Password
+
+DESCRIPTION
+  Login to CrossCopy Cloud
+
+EXAMPLES
+  $ xcopy login
+
+  $ xcopy login -e username@email.com -p password
+```
+
+_See code: [dist/commands/login.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.0/dist/commands/login.ts)_
 
 ## `xcopy plugins`
 
@@ -334,4 +407,60 @@ FLAGS
 DESCRIPTION
   Update installed plugins.
 ```
+
+## `xcopy update [CHANNEL]`
+
+update the xcopy CLI
+
+```
+USAGE
+  $ xcopy update [CHANNEL] [-a] [-v <value> | -i] [--force]
+
+FLAGS
+  -a, --available        Install a specific version.
+  -i, --interactive      Interactively select version to install. This is ignored if a channel is provided.
+  -v, --version=<value>  Install a specific version.
+  --force                Force a re-download of the requested version.
+
+DESCRIPTION
+  update the xcopy CLI
+
+EXAMPLES
+  Update to the stable channel:
+
+    $ xcopy update stable
+
+  Update to a specific version:
+
+    $ xcopy update --version 1.0.0
+
+  Interactively select version:
+
+    $ xcopy update --interactive
+
+  See available versions:
+
+    $ xcopy update --available
+```
+
+_See code: [@oclif/plugin-update](https://github.com/oclif/plugin-update/blob/v3.0.0/src/commands/update.ts)_
+
+## `xcopy upload`
+
+Upload some content
+
+```
+USAGE
+  $ xcopy upload
+
+DESCRIPTION
+  Upload some content
+
+EXAMPLES
+  echo "content" | xcopy
+
+  $ xcopy < content.txt
+```
+
+_See code: [dist/commands/upload.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.0/dist/commands/upload.ts)_
 <!-- commandsstop -->

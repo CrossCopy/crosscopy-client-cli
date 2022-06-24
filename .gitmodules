@@ -1,3 +1,0 @@
-[submodule "graphql-schema"]
-	path = graphql-schema
-	url = git@github.com:CrossCopy/crosscopy-graphql-schema.git

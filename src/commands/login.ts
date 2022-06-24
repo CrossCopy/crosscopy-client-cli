@@ -1,7 +1,15 @@
 import {Command, Flags} from '@oclif/core'
 import {CryptoService} from '@crosscopy/core'
 import * as inquirer from 'inquirer'
-import {getSdk} from '../graphql/gql-req'
+import gqlSchema from '@crosscopy/graphql-schema'
+
+/**
+ * Sample Command
+ *
+ * ./bin/dev login -e user0@crosscopy.io -p password0
+ */
+
+const {getSdk} = gqlSchema.requests
 import {GraphQLClient} from 'graphql-request'
 
 const gqlClient = new GraphQLClient('https://api.crosscopy.io/graphql')
@@ -25,11 +33,7 @@ export default class Login extends Command {
     // type Prompt = Parameters<typeof inquirer.prompt>
     const prompts: {name: string; message: string; type: string}[] = []
     if (!flags.email) {
-      prompts.push({
-        name: 'email',
-        message: 'Enter your Email',
-        type: 'input',
-      })
+      prompts.push({name: 'email', message: 'Enter your Email', type: 'input'})
     }
 
     if (!flags.password) {
