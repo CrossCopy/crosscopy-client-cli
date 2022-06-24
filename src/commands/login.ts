@@ -50,10 +50,10 @@ export default class Login extends Command {
     const password = flags.password || responses.password;
     if (!email || !password)
       throw new Error('Email and Password have to be defined');
-    // const crypto = CryptoService.instance;
+    const crypto = CryptoService.instance;
     // console.log(crypto);
-    // crypto.init(password);
-    // this.log(crypto.passwordHash);
+    crypto.init(password);
+    this.log(crypto.passwordHash);
     sdk
       .login({email, password})
       .then((res) => {
