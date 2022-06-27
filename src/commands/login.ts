@@ -1,7 +1,8 @@
 import {Command, Flags} from '@oclif/core';
 import {CryptoService} from '@crosscopy/core';
 import * as inquirer from 'inquirer';
-import gqlSchema from '@crosscopy/graphql-schema';
+import {requests} from '@crosscopy/graphql-schema';
+import nconf from 'nconf';
 
 /**
  * Sample Command
@@ -9,7 +10,7 @@ import gqlSchema from '@crosscopy/graphql-schema';
  * ./bin/dev login -e user0@crosscopy.io -p password0
  */
 
-const {getSdk} = gqlSchema.requests;
+const {getSdk} = requests;
 import {GraphQLClient} from 'graphql-request';
 
 const gqlClient = new GraphQLClient('https://api.crosscopy.io/graphql');
@@ -19,8 +20,8 @@ export default class Login extends Command {
   static description = 'Login to CrossCopy Cloud';
 
   static examples = [
-    'xcopy login',
-    'xcopy login -e username@email.com -p password',
+    'ccp login',
+    'ccp login -e username@email.com -p password',
   ];
 
   static flags = {
@@ -29,6 +30,8 @@ export default class Login extends Command {
   };
 
   public async run(): Promise<void> {
+    nconf.argv().env().file({file: 'config.json'});
+    console.log(nconf.get('a'));
     const {flags} = await this.parse(Login);
     // type Prompt = Parameters<typeof inquirer.prompt>
     const prompts: {name: string; message: string; type: string}[] = [];

@@ -1,11 +1,11 @@
-import {Command} from '@oclif/core'
+import {Command} from '@oclif/core';
 // import clipboard from 'clipboardy'
 // import {execa} from 'execa'
-import {exec} from 'node:child_process'
+import {exec} from 'node:child_process';
 
-import util from 'node:util'
+import util from 'node:util';
 
-const execPromise = util.promisify(exec)
+const execPromise = util.promisify(exec);
 
 // import * as readline from 'node:readline'
 // import {stdin as input, stdout as output} from 'node:process'
@@ -14,9 +14,9 @@ const execPromise = util.promisify(exec)
 // import * as clipboard from 'clipboardy'
 
 export default class Upload extends Command {
-  static description = 'Upload some content'
+  static description = 'Upload some content';
 
-  static examples = ['echo "content" | xcopy', 'xcopy < content.txt']
+  static examples = ['echo "content" | ccp', 'ccp < content.txt'];
 
   public async run(): Promise<void> {
     // console.log(`config: ${JSON.stringify(this.config, null, 2)}`)
@@ -27,15 +27,15 @@ export default class Upload extends Command {
     //   this.log(`answer: ${answer}`)
     //   rl.close()
     // })
-    await execPromise('ls')
-    const {stdout, stderr} = await execPromise('ls')
-    this.log(stdout)
-    this.log(stderr)
+    await execPromise('ls');
+    const {stdout, stderr} = await execPromise('ls');
+    this.log(stdout);
+    this.log(stderr);
 
     // const records = await prisma.rec.findMany({})
     // console.log(records)
     // execa('echo', ['unicorns'])
     // execa('echo', ['unicorns']).stdout.pipe(process.stdout)
-    return Promise.resolve()
+    return Promise.resolve();
   }
 }

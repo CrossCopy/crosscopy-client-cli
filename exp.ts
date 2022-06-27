@@ -1,5 +1,6 @@
 import {db} from '@crosscopy/core';
 import {v4 as uuidv4} from 'uuid';
+import {encryption} from '@crosscopy/core';
 
 const {createDataSource, Rec, getRecRepo} = db;
 
@@ -15,3 +16,5 @@ const dataSource = createDataSource('dev.sqlite');
   const allRecords = await dataSource.manager.findAndCount(Rec);
   console.log(allRecords);
 })();
+
+console.log(encryption.hashPassword('pass'));

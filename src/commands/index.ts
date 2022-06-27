@@ -1,21 +1,31 @@
-import {Command} from '@oclif/core'
-// TODO: Switch to Promise API (v17): https://nodejs.org/api/readline.html#promises-api
-// import * as readline from 'node:readline'
-// import {stdin as input, stdout as output} from 'node:process'
+import {Command, Flags} from '@oclif/core';
 
-// const rl = readline.createInterface({input, output})
+export default class Hello extends Command {
+  static description = 'Say hello';
 
-export default class Index extends Command {
-  static description = 'describe the command here'
+  static examples = [
+    `$ oex hello friend --from oclif
+hello friend from oclif! (./src/commands/hello/index.ts)
+`,
+  ];
 
-  static examples = ['echo "content" | xcopy', 'xcopy < content.txt']
+  static flags = {
+    from: Flags.string({
+      char: 'f',
+      description: 'Whom is saying hello',
+      required: true,
+    }),
+  };
 
-  public async run(): Promise<void> {
-    console.log(`config: ${this.config}`)
-    // rl.question('Content to upload?', (answer: string) => {
-    //   this.log(`answer: ${answer}`)
-    // })
-    // rl.close()
-    return Promise.resolve()
+  static args = [
+    {name: 'person', description: 'Person to say hello to', required: true},
+  ];
+
+  async run(): Promise<void> {
+    const {args, flags} = await this.parse(Hello);
+
+    this.log(
+      `hello ${args.person} from ${flags.from}! (./src/commands/hello/index.ts)`,
+    );
   }
 }
