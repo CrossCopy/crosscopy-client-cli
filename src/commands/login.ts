@@ -2,23 +2,22 @@ import {Command, Flags} from '@oclif/core';
 import {CryptoService} from '@crosscopy/core';
 import * as inquirer from 'inquirer';
 import {requests} from '@crosscopy/graphql-schema';
-import nconf from 'nconf';
+import {operations as ops} from '@crosscopy/graphql-schema';
+import cloneDeep from 'lodash/cloneDeep';
 
 /**
  * Sample Command
  *
  * ./bin/dev login -e user0@crosscopy.io -p password0
  */
-
 const {getSdk} = requests;
 import {GraphQLClient} from 'graphql-request';
-
-const gqlClient = new GraphQLClient('https://api.crosscopy.io/graphql');
-const sdk = getSdk(gqlClient);
+import {SettingConfig, AuthConfig} from '../config';
 
 export default class Login extends Command {
   static description = 'Login to CrossCopy Cloud';
-
+  auth = new AuthConfig(this.config.configDir);
+  setting = new SettingConfig(this.config.configDir);
   static examples = [
     'ccp login',
     'ccp login -e username@email.com -p password',
@@ -30,11 +29,10 @@ export default class Login extends Command {
   };
 
   public async run(): Promise<void> {
-    nconf.argv().env().file({file: 'config.json'});
-    console.log(nconf.get('a'));
+    const gqlClient = new GraphQLClient(this.setting.graphqlUrl);
+    const sdk = getSdk(gqlClient);
     const {flags} = await this.parse(Login);
-    // type Prompt = Parameters<typeof inquirer.prompt>
-    const prompts: {name: string; message: string; type: string}[] = [];
+    const prompts: { name: string; message: string; type: string }[] = [];
     if (!flags.email) {
       prompts.push({name: 'email', message: 'Enter your Email', type: 'input'});
     }
@@ -47,27 +45,41 @@ export default class Login extends Command {
       });
     }
 
-    const responses: {email?: string; password?: string} =
+    const responses: { email?: string; password?: string } =
       await inquirer.prompt(prompts);
     const email = flags.email || responses.email;
     const password = flags.password || responses.password;
-    if (!email || !password)
-      throw new Error('Email and Password have to be defined');
-    const crypto = CryptoService.instance;
-    // console.log(crypto);
-    crypto.init(password);
-    this.log(crypto.passwordHash);
+    if (!email || !password) throw new Error('Email and Password not defined');
+
     sdk
       .login({email, password})
       .then((res) => {
-        console.log(res.login?.accessToken);
-        console.log(res.login?.success);
-        if (res.login?.message) {
+        if (!res.login)
+          throw new Error('Unexpected Error, wrong login response');
+        this.auth.accessToken = res.login.accessToken;
+        if (res.login.refreshToken) {
+          this.auth.refreshToken = res.login.refreshToken;
+        } else {
+          this.warn(
+            "Didn't receive a refresh token, session will expire soon.",
+          );
+        }
+
+        const userOnly = cloneDeep(res.login.user);
+        delete userOnly?.records;
+        this.auth.user = userOnly as unknown as ops.User;
+        const crypto = CryptoService.instance;
+        crypto.init(password);
+        this.auth.passwordHash = crypto.passwordHash;
+
+        if (res.login.message) {
           this.log(res.login?.message);
         }
+
+        this.log(`Login As ${this.auth.user.username}`);
       })
       .catch((error) => {
-        this.error(error);
+        this.error(error.message);
       });
   }
 }
