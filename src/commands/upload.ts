@@ -16,7 +16,7 @@ const execPromise = util.promisify(exec);
 export default class Upload extends Command {
   static description = 'Upload some content';
 
-  static examples = ['echo "content" | ccp', 'ccp < content.txt'];
+  static examples = ['echo "content" | <%= config.bin %>', '<%= config.bin %> < content.txt'];
 
   public async run(): Promise<void> {
     // console.log(`config: ${JSON.stringify(this.config, null, 2)}`)

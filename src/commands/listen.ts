@@ -9,7 +9,7 @@ export default class Listen extends Command {
   setting = new SettingConfig(this.config.configDir);
   auth = new AuthConfig(this.config.configDir);
 
-  static examples = ['ccp listen'];
+  static examples = ['<%= config.bin %> listen'];
 
   public async run(): Promise<void> {
     if (!this.auth.accessToken) return this.error('Not Authenticated');

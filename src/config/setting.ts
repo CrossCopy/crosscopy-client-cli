@@ -1,15 +1,19 @@
 import Config from './config';
 
+type Mode = 'offline' | 'online';
+
 export type Setting = {
   plugins: [];
   server: string;
   dbPath: string;
+  mode: Mode;
 };
 
 export const settingInitConfig: Setting = {
   plugins: [],
   server: 'https://api.crosscopy.io',
   dbPath: '',
+  mode: 'online',
 };
 
 export default class SettingConfig extends Config<Setting> {
@@ -28,6 +32,15 @@ export default class SettingConfig extends Config<Setting> {
 
   set dbPath(value: string) {
     this._config.dbPath = value;
+    this.save();
+  }
+
+  get mode(): Mode {
+    return this._config.mode;
+  }
+
+  set mode(value: Mode) {
+    this._config.mode = value;
     this.save();
   }
 

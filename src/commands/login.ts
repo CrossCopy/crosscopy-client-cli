@@ -19,8 +19,8 @@ export default class Login extends Command {
   auth = new AuthConfig(this.config.configDir);
   setting = new SettingConfig(this.config.configDir);
   static examples = [
-    'ccp login',
-    'ccp login -e username@email.com -p password',
+    '<%= config.bin %> login',
+    '<%= config.bin %> login -e username@email.com -p password',
   ];
 
   static flags = {
@@ -32,7 +32,7 @@ export default class Login extends Command {
     const gqlClient = new GraphQLClient(this.setting.graphqlUrl);
     const sdk = getSdk(gqlClient);
     const {flags} = await this.parse(Login);
-    const prompts: { name: string; message: string; type: string }[] = [];
+    const prompts: {name: string; message: string; type: string}[] = [];
     if (!flags.email) {
       prompts.push({name: 'email', message: 'Enter your Email', type: 'input'});
     }
@@ -45,7 +45,7 @@ export default class Login extends Command {
       });
     }
 
-    const responses: { email?: string; password?: string } =
+    const responses: {email?: string; password?: string} =
       await inquirer.prompt(prompts);
     const email = flags.email || responses.email;
     const password = flags.password || responses.password;

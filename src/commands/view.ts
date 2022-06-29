@@ -6,7 +6,7 @@ export default class View extends Command {
   static description = 'View Clipboard Data';
   setting = new SettingConfig(this.config.configDir);
 
-  static examples = ['ccp view'];
+  static examples = ['<%= config.bin %> view'];
 
   public async run(): Promise<void> {
     if (!this.setting.dbPath) throw new Error('DB Path not defined');

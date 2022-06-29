@@ -18,7 +18,7 @@
   ],
   "dependencies": {
     "@crosscopy/core": "^0.0.3-alpha.10",
-    "@crosscopy/graphql-schema": "^0.1.0-pre-alpha.10",
+    "@crosscopy/graphql-schema": "^0.1.0-pre-alpha.18",
     "@oclif/core": "^1",
     "@oclif/plugin-autocomplete": "^1.3.0",
     "@oclif/plugin-help": "^5",
@@ -29,6 +29,7 @@
     "axios": "^0.27.2",
     "boxen": "^7.0.0",
     "clipboardy": "^2.3.0",
+    "debug": "^4.3.4",
     "figlet": "^1.5.2",
     "fs-extra": "^10.1.0",
     "graphql-request": "^4.3.0",
@@ -46,6 +47,7 @@
     "@graphql-codegen/typescript-operations": "^2.4.2",
     "@oclif/test": "^2",
     "@types/chai": "^4",
+    "@types/debug": "^4.1.7",
     "@types/figlet": "^1.5.4",
     "@types/fs-extra": "^9.0.13",
     "@types/inquirer": "^8.2.1",
@@ -71,9 +73,9 @@
     "commands": "./dist/commands",
     "hooks": {
       "init": [
-        "./lib/hooks/init/config",
-        "./lib/hooks/init/auth",
-        "./lib/hooks/init/wakeup"
+        "./src/hooks/init/auth",
+        "./src/hooks/init/config",
+        "./src/hooks/init/wakeup"
       ]
     },
     "plugins": [

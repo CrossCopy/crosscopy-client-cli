@@ -16,7 +16,7 @@ export default class Sync extends Command {
 
   static description = 'Sync Data With CrossCopy Cloud';
 
-  static examples = ['ccp sync'];
+  static examples = ['<%= config.bin %> sync'];
 
   public async run(): Promise<void> {
     const dbSerivce = db.DBService.instance;

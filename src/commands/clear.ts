@@ -5,11 +5,11 @@ export default class Clear extends Command {
   static description = 'Clear config and data';
 
   static examples = [
-    'ccp clear',
-    'ccp clear --data',
-    'ccp clear --config',
-    'ccp clear --data --config',
-    'ccp clear --all',
+    '<%= config.bin %> clear',
+    '<%= config.bin %> clear --data',
+    '<%= config.bin %> clear --config',
+    '<%= config.bin %> clear --data --config',
+    '<%= config.bin %> clear --all',
   ];
 
   static flags = {
