@@ -8,6 +8,7 @@ import {v4 as uuidv4} from 'uuid';
 import {generatePluginManager} from '../util/plugin';
 import {IsNull} from 'typeorm';
 import {syncDownload} from '../util/sync';
+import cb from 'clipboardy';
 
 export default class Listen extends Command {
   static description = 'Realtime Syncing';
@@ -87,6 +88,7 @@ export default class Listen extends Command {
       .on('uploaded', async (record: ops.Rec) => {
         record.value = await pluginManager.download(record.value);
         const newRecord = await db.DBService.instance.RecRepo.save(record);
+        cb.writeSync(newRecord.value);
         console.log('onUpload');
         console.log(newRecord);
       })
