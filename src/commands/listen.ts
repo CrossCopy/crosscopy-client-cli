@@ -14,7 +14,6 @@ export default class Listen extends Command {
   static description = 'Realtime Syncing';
   setting = new SettingConfig(this.config.configDir);
   auth = new AuthConfig(this.config.configDir);
-  dbService = db.DBService.instance;
 
   static examples = ['<%= config.bin %> <%= command.id %>'];
 
@@ -34,18 +33,19 @@ export default class Listen extends Command {
 
   public async run(): Promise<void> {
     if (!this.auth.accessToken) return this.error('Not Authenticated');
-    await this.dbService.init(this.setting.dbPath);
+    const dbService = db.DBService.instance;
+    await dbService.init(this.setting.dbPath);
     const socketioUrl = this.setting.socketioUrl;
     if (!this.auth.passwordHash)
       throw new Error('No Decryption Key Found, Please Login Again');
     const pluginManager = await generatePluginManager(this.auth.passwordHash);
     this.log(`connecting to ${socketioUrl}`);
     const allUUIDs = (
-      await this.dbService.RecRepo.find({
+      await dbService.RecRepo.find({
         select: ['uuid'],
       })
     ).map((rec) => rec.uuid);
-    const clientSideOnlyRecords = await this.dbService.RecRepo.find({
+    const clientSideOnlyRecords = await dbService.RecRepo.find({
       // eslint-disable-next-line new-cap
       where: {id: IsNull()},
     });
@@ -79,7 +79,7 @@ export default class Listen extends Command {
             idMapping,
             newRecords as requests.Rec[],
             pluginManager,
-            this.dbService,
+            dbService,
           );
         }
       })
@@ -97,10 +97,10 @@ export default class Listen extends Command {
     const cbListener = getCbListener();
     // this.log('Start Clipboard Listener');
     cbListener.listen(
-      this.dbService,
+      dbService,
       async (content) => {
         const uuid = uuidv4();
-        const record = await this.dbService.createRec({
+        const record = await dbService.createRec({
           value: content,
           uuid: uuid,
         });
