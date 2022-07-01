@@ -1,15 +1,17 @@
 import {plugin} from '@crosscopy/core';
 
-const {PluginManager, corePlugins, externalPlugins} = plugin;
+const {PluginManager, corePlugins} = plugin;
 
+// TODO: make this plugin manager generator a singleton class
 export const generatePluginManager = async (passwordHash: string) => {
   const encryptionPlugin = new corePlugins.EncryptionPlugin({
     passwordHash: passwordHash,
   });
-  const notionPlugin = new externalPlugins.NotionPlugin();
+  // const notionPlugin = new externalPlugins.NotionPlugin();
   const headPlugins: plugin.CorePlugin[] = [];
   const tailPlugins: plugin.CorePlugin[] = [encryptionPlugin];
-  const _externalPlugins: plugin.ExternalPlugin[] = [notionPlugin];
+  const _externalPlugins: plugin.ExternalPlugin[] = [];
+  // const _externalPlugins: plugin.ExternalPlugin[] = [notionPlugin];
   const manager = new PluginManager(headPlugins, tailPlugins, _externalPlugins);
   // TODO: Try catch
   await manager.activate();

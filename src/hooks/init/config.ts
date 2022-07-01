@@ -5,7 +5,9 @@ import path from 'node:path';
 import AuthConfig from '../../../src/config/auth';
 import SettingConfig from '../../../src/config/setting';
 import {db} from '@crosscopy/core';
+import debug from 'debug';
 
+debug.enable('crosscopy:*');
 // const rl = readline.createInterface({
 //   input: process.stdin,
 //   output: process.stdout,

@@ -1,6 +1,6 @@
 import Config from './config';
 
-type Mode = 'offline' | 'online';
+export type Mode = 'offline' | 'online';
 
 export type Setting = {
   plugins: [];

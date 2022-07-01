@@ -19,8 +19,8 @@ export default class Login extends Command {
   auth = new AuthConfig(this.config.configDir);
   setting = new SettingConfig(this.config.configDir);
   static examples = [
-    '<%= config.bin %> login',
-    '<%= config.bin %> login -e username@email.com -p password',
+    '<%= config.bin %> <%= command.id %>',
+    '<%= config.bin %> <%= command.id %> -e username@email.com -p password',
   ];
 
   static flags = {
@@ -33,6 +33,7 @@ export default class Login extends Command {
     const sdk = getSdk(gqlClient);
     const {flags} = await this.parse(Login);
     const prompts: {name: string; message: string; type: string}[] = [];
+
     if (!flags.email) {
       prompts.push({name: 'email', message: 'Enter your Email', type: 'input'});
     }

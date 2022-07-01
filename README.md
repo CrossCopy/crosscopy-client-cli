@@ -17,96 +17,49 @@ oclif example Hello World CLI
 <!-- usage -->
 ```sh-session
 $ npm install -g crosscopy
-$ ccpOMMAND
+$ xc COMMAND
 running command...
-$ ccp--version)
+$ xc (--version)
 crosscopy/0.0.0 darwin-arm64 node-v16.14.2
-$ ccp-help [COMMAND]
+$ xc --help [COMMAND]
 USAGE
-  $ ccpOMMAND
+  $ xc COMMAND
 ...
 ```
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`ccp PERSOccpccp--person)
-* [`ccputocomplete [SHELL]`](#ccccpocomplete-shell)
-* [`ccpello PERSON`](#ccccplo-person)
-* [`ccpello world`](#ccccplo-world)
-* [`ccpelp [COMMAND]`](#ccccpp-command)
-* [`ccpogin`](#ccccpin)
-* [`ccplugins`](#ccccpgins)
-* [`ccplugins:install PLUGIN...`](#ccccpginsinstall-plugin)
-* [`ccplugins:inspect PLUGIN...`](#ccccpginsinspect-plugin)
-* [`ccplugins:install PLUGIN...`](#ccccpginsinstall-plugin-1)
-* [`ccplugins:link PLUGIN`](#ccccpginslink-plugin)
-* [`ccplugins:uninstall PLUGIN...`](#ccccpginsuninstall-plugin)
-* [`ccplugins:uninstall PLUGIN...`](#ccccpginsuninstall-plugin-1)
-* [`ccplugins:uninstall PLUGIN...`](#ccccpginsuninstall-plugin-2)
-* [`ccplugins update`](#ccccpgins-update)
-* [`ccppdate [CHANNEL]`](#ccccpate-channel)
-* [`ccppload`](#ccccpoad)
+* [`xc . PERSON`](#xc--person)
+* [`xc autocomplete [SHELL]`](#xc-autocomplete-shell)
+* [`xc clear`](#xc-clear)
+* [`xc hello PERSON`](#xc-hello-person)
+* [`xc hello world`](#xc-hello-world)
+* [`xc help [COMMAND]`](#xc-help-command)
+* [`xc listen`](#xc-listen)
+* [`xc login`](#xc-login)
+* [`xc plugins`](#xc-plugins)
+* [`xc plugins:install PLUGIN...`](#xc-pluginsinstall-plugin)
+* [`xc plugins:inspect PLUGIN...`](#xc-pluginsinspect-plugin)
+* [`xc plugins:install PLUGIN...`](#xc-pluginsinstall-plugin-1)
+* [`xc plugins:link PLUGIN`](#xc-pluginslink-plugin)
+* [`xc plugins:uninstall PLUGIN...`](#xc-pluginsuninstall-plugin)
+* [`xc plugins:uninstall PLUGIN...`](#xc-pluginsuninstall-plugin-1)
+* [`xc plugins:uninstall PLUGIN...`](#xc-pluginsuninstall-plugin-2)
+* [`xc plugins update`](#xc-plugins-update)
+* [`xc setting`](#xc-setting)
+* [`xc setting mode`](#xc-setting-mode)
+* [`xc sync`](#xc-sync)
+* [`xc update [CHANNEL]`](#xc-update-channel)
+* [`xc upload`](#xc-upload)
+* [`xc view`](#xc-view)
 
-## `ccp PERSON`
+## `xc . PERSON`
 
 Say hello
 
 ```
 USAGE
-  $ ccp [PERSON] -f <value>
-
-ARGUMENTS
-  PERSON  Person to say hello to
-
-FLAGS
-  -f, --from=<valueccpequired) Whom is saying hello
-
-DESCccpON
-  Say hello
-
-EXAMPLES
-  $ oex hello friend --from oclif
-  heccpriend from oclif! (./src/commands/hello/index.ts)
-```
-
-_See code: [dist/commands/index.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.0/dist/commands/index.ts)_
-
-## `ccp autocomplete [SHELL]`
-ccp
-display autocomplete installation instructions
-
-```
-USAGE
-  $ ccp autocomplete [SHELL] [-r]
-
-ARGUMENTS
-  SHELL  shell type
-
-FLAGS
-  -r, --refresh-cache  Refresh cache (ignores displaying instructions)
-ccp
-DESCRIPTION
-  diccp autocomplete installation instructions
-
-EXAMccp
-  $ ccp autocomplete
-ccp
-  $ ccp autocomplete bash
-
-  $ ccp autocomplete zsh
-
-  $ ccputocomplete --refresh-cache
-```
-
-_See code: [@oclif/plugin-autocomplete](https://github.com/oclif/plugin-autocomplete/blob/v1.3.0/src/commands/autocomplete/index.ts)_
-
-## `ccp hello PERSON`
-ccp
-Say hello
-
-```
-USAGE
-  $ ccp hello [PERSON] -f <value>
+  $ xc . [PERSON] -f <value>
 
 ARGUMENTS
   PERSON  Person to say hello to
@@ -119,97 +72,197 @@ DESCRIPTION
 
 EXAMPLES
   $ oex hello friend --from oclif
-  heccpriend from oclif! (./src/commands/hello/index.ts)
+  hello friend from oclif! (./src/commands/hello/index.ts)
+```
+
+_See code: [dist/commands/index.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.0/dist/commands/index.ts)_
+
+## `xc autocomplete [SHELL]`
+
+display autocomplete installation instructions
+
+```
+USAGE
+  $ xc autocomplete [SHELL] [-r]
+
+ARGUMENTS
+  SHELL  shell type
+
+FLAGS
+  -r, --refresh-cache  Refresh cache (ignores displaying instructions)
+
+DESCRIPTION
+  display autocomplete installation instructions
+
+EXAMPLES
+  $ xc autocomplete
+
+  $ xc autocomplete bash
+
+  $ xc autocomplete zsh
+
+  $ xc autocomplete --refresh-cache
+```
+
+_See code: [@oclif/plugin-autocomplete](https://github.com/oclif/plugin-autocomplete/blob/v1.3.0/src/commands/autocomplete/index.ts)_
+
+## `xc clear`
+
+Clear config and data
+
+```
+USAGE
+  $ xc clear [-d] [-c] [-a]
+
+FLAGS
+  -a, --all
+  -c, --config
+  -d, --data
+
+DESCRIPTION
+  Clear config and data
+
+EXAMPLES
+  $ xc clear
+
+  $ xc clear --data
+
+  $ xc clear --config
+
+  $ xc clear --data --config
+
+  $ xc clear --all
+```
+
+_See code: [dist/commands/clear.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.0/dist/commands/clear.ts)_
+
+## `xc hello PERSON`
+
+Say hello
+
+```
+USAGE
+  $ xc hello [PERSON] -f <value>
+
+ARGUMENTS
+  PERSON  Person to say hello to
+
+FLAGS
+  -f, --from=<value>  (required) Whom is saying hello
+
+DESCRIPTION
+  Say hello
+
+EXAMPLES
+  $ oex hello friend --from oclif
+  hello friend from oclif! (./src/commands/hello/index.ts)
 ```
 
 _See code: [dist/commands/hello/index.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.0/dist/commands/hello/index.ts)_
 
-## `ccp hello world`
-ccp
+## `xc hello world`
+
 Say hello world
 
 ```
 USAGE
-  $ ccp hello world
+  $ xc hello world
 
 DESCRIPTION
   Say hello world
 
-EXAMccp
+EXAMPLES
   $ oex hello world
-  hello world! (.ccpcommands/hello/world.ts)
+  hello world! (./src/commands/hello/world.ts)
 ```
 
-## `ccp help [COMMAND]`
-ccp
-Display help for ccp.
+## `xc help [COMMAND]`
+
+Display help for xc.
 
 ```
 USAGE
-  $ ccp help [COMMAND] [-n]
+  $ xc help [COMMAND] [-n]
 
 ARGUMENTS
   COMMAND  Command to show help for.
-ccp
+
 FLAGS
   -n, --nested-commands  Include all nested commands in the output.
 
 DESCRIPTION
-  Diccp help for ccp.
+  Display help for xc.
 ```
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v5.1.10/src/commands/help.ts)_
 
-## `ccp login`
-ccp
+## `xc listen`
+
+Realtime Syncing
+
+```
+USAGE
+  $ xc listen
+
+DESCRIPTION
+  Realtime Syncing
+
+EXAMPLES
+  $ xc listen
+```
+
+_See code: [dist/commands/listen.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.0/dist/commands/listen.ts)_
+
+## `xc login`
+
 Login to CrossCopy Cloud
 
 ```
 USAGE
-  $ ccp login [-e <value>] [-p <value>]
+  $ xc login [-e <value>] [-p <value>]
 
 FLAGS
   -e, --email=<value>     Email
   -p, --password=<value>  Password
-ccp
+
 DESCRIPTION
-  Loccpo CrossCopy Cloud
+  Login to CrossCopy Cloud
 
 EXAMPLES
-  xcopy login
+  $ xc login
 
-  xcccpogin -e username@email.com -p password
+  $ xc login -e username@email.com -p password
 ```
 
 _See code: [dist/commands/login.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.0/dist/commands/login.ts)_
 
-## `ccp plugins`
-ccp
+## `xc plugins`
+
 List installed plugins.
 
 ```
 USAGE
-  $ ccp plugins [--core]
+  $ xc plugins [--core]
 
 FLAGS
   --core  Show core plugins.
-ccp
+
 DESCRIPTION
   List installed plugins.
 
 EXAMPLES
-  $ ccplugins
+  $ xc plugins
 ```
 
 _See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v2.0.11/src/commands/plugins/index.ts)_
 
-## `ccp plugins:install PLUGIN...`
-ccp
+## `xc plugins:install PLUGIN...`
+
 Installs a plugin into the CLI.
 
 ```
 USAGE
-  $ ccp plugins:install PLUGIN...
+  $ xc plugins:install PLUGIN...
 
 ARGUMENTS
   PLUGIN  Plugin to install.
@@ -226,28 +279,28 @@ DESCRIPTION
 
   Installation of a user-installed plugin will override a core plugin.
 
-  e.ccp you have a core plugin that has a 'hello' command, installing a user-installed plugin with a 'hello' command
+  e.g. If you have a core plugin that has a 'hello' command, installing a user-installed plugin with a 'hello' command
   will override the core plugin implementation. This is useful if a user needs to update core plugin functionality in
   the CLI without the need to patch and update the whole CLI.
-ccp
+
 ALIASES
-  $ ccplugins add
+  $ xc plugins add
 
-EXAMccp
-  $ ccp plugins:install myplugin 
+EXAMPLES
+  $ xc plugins:install myplugin 
 
-  $ ccplugins:install https://github.com/someuser/someplugin
+  $ xc plugins:install https://github.com/someuser/someplugin
 
-  $ ccp plugins:install someuser/someplugin
+  $ xc plugins:install someuser/someplugin
 ```
 
-## `ccp plugins:inspect PLUGIN...`
-ccp
+## `xc plugins:inspect PLUGIN...`
+
 Displays installation properties of a plugin.
 
 ```
 USAGE
-  $ ccp plugins:inspect PLUGIN...
+  $ xc plugins:inspect PLUGIN...
 
 ARGUMENTS
   PLUGIN  [default: .] Plugin to inspect.
@@ -255,21 +308,21 @@ ARGUMENTS
 FLAGS
   -h, --help     Show CLI help.
   -v, --verbose
-ccp
+
 DESCRIPTION
   Displays installation properties of a plugin.
-ccp
+
 EXAMPLES
-  $ ccp plugins:inspect myplugin
+  $ xc plugins:inspect myplugin
 ```
 
-## `ccp plugins:install PLUGIN...`
-ccp
+## `xc plugins:install PLUGIN...`
+
 Installs a plugin into the CLI.
 
 ```
 USAGE
-  $ ccp plugins:install PLUGIN...
+  $ xc plugins:install PLUGIN...
 
 ARGUMENTS
   PLUGIN  Plugin to install.
@@ -286,28 +339,28 @@ DESCRIPTION
 
   Installation of a user-installed plugin will override a core plugin.
 
-  e.ccp you have a core plugin that has a 'hello' command, installing a user-installed plugin with a 'hello' command
+  e.g. If you have a core plugin that has a 'hello' command, installing a user-installed plugin with a 'hello' command
   will override the core plugin implementation. This is useful if a user needs to update core plugin functionality in
   the CLI without the need to patch and update the whole CLI.
-ccp
+
 ALIASES
-  $ ccplugins add
+  $ xc plugins add
 
-EXAMccp
-  $ ccp plugins:install myplugin 
+EXAMPLES
+  $ xc plugins:install myplugin 
 
-  $ ccplugins:install https://github.com/someuser/someplugin
+  $ xc plugins:install https://github.com/someuser/someplugin
 
-  $ ccp plugins:install someuser/someplugin
+  $ xc plugins:install someuser/someplugin
 ```
 
-## `ccp plugins:link PLUGIN`
-ccp
+## `xc plugins:link PLUGIN`
+
 Links a plugin into the CLI for development.
 
 ```
 USAGE
-  $ ccp plugins:link PLUGIN
+  $ xc plugins:link PLUGIN
 
 ARGUMENTS
   PATH  [default: .] path to plugin
@@ -320,21 +373,21 @@ DESCRIPTION
   Links a plugin into the CLI for development.
 
   Installation of a linked plugin will override a user-installed or core plugin.
-ccp
+
   e.g. If you have a user-installed or core plugin that has a 'hello' command, installing a linked plugin with a 'hello'
   command will override the user-installed or core plugin implementation. This is useful for development work.
-ccp
+
 EXAMPLES
-  $ ccp plugins:link myplugin
+  $ xc plugins:link myplugin
 ```
 
-## `ccp plugins:uninstall PLUGIN...`
-ccp
+## `xc plugins:uninstall PLUGIN...`
+
 Removes a plugin from the CLI.
 
 ```
 USAGE
-  $ ccp plugins:uninstall PLUGIN...
+  $ xc plugins:uninstall PLUGIN...
 
 ARGUMENTS
   PLUGIN  plugin to uninstall
@@ -342,22 +395,22 @@ ARGUMENTS
 FLAGS
   -h, --help     Show CLI help.
   -v, --verbose
-ccp
-DESCccpON
+
+DESCRIPTION
   Removes a plugin from the CLI.
 
-ALIAccp
-  $ ccp plugins unlink
-  $ ccp plugins remove
+ALIASES
+  $ xc plugins unlink
+  $ xc plugins remove
 ```
 
-## `ccp plugins:uninstall PLUGIN...`
-ccp
+## `xc plugins:uninstall PLUGIN...`
+
 Removes a plugin from the CLI.
 
 ```
 USAGE
-  $ ccp plugins:uninstall PLUGIN...
+  $ xc plugins:uninstall PLUGIN...
 
 ARGUMENTS
   PLUGIN  plugin to uninstall
@@ -365,22 +418,22 @@ ARGUMENTS
 FLAGS
   -h, --help     Show CLI help.
   -v, --verbose
-ccp
-DESCccpON
+
+DESCRIPTION
   Removes a plugin from the CLI.
 
-ALIAccp
-  $ ccp plugins unlink
-  $ ccp plugins remove
+ALIASES
+  $ xc plugins unlink
+  $ xc plugins remove
 ```
 
-## `ccp plugins:uninstall PLUGIN...`
-ccp
+## `xc plugins:uninstall PLUGIN...`
+
 Removes a plugin from the CLI.
 
 ```
 USAGE
-  $ ccp plugins:uninstall PLUGIN...
+  $ xc plugins:uninstall PLUGIN...
 
 ARGUMENTS
   PLUGIN  plugin to uninstall
@@ -388,84 +441,156 @@ ARGUMENTS
 FLAGS
   -h, --help     Show CLI help.
   -v, --verbose
-ccp
-DESCccpON
+
+DESCRIPTION
   Removes a plugin from the CLI.
 
-ALIAccp
-  $ ccp plugins unlink
-  $ ccp plugins remove
+ALIASES
+  $ xc plugins unlink
+  $ xc plugins remove
 ```
 
-## `ccp plugins update`
-ccp
+## `xc plugins update`
+
 Update installed plugins.
 
 ```
 USAGE
-  $ ccp plugins update [-h] [-v]
+  $ xc plugins update [-h] [-v]
 
 FLAGS
   -h, --help     Show CLI help.
   -v, --verbose
-ccp
+
 DESCRIPTION
-  Update inccped plugins.
+  Update installed plugins.
 ```
 
-## `ccp update [CHANNEL]`
-ccp
-update the ccp CLI
+## `xc setting`
+
+describe the command here
 
 ```
 USAGE
-  $ ccp update [CHANNEL] [-a] [-v <value> | -i] [--force]
+  $ xc setting
+
+DESCRIPTION
+  describe the command here
+
+EXAMPLES
+  $ xc setting
+```
+
+_See code: [dist/commands/setting/index.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.0/dist/commands/setting/index.ts)_
+
+## `xc setting mode`
+
+Set mode of the app, either offline or online.
+
+```
+USAGE
+  $ xc setting mode [--offline] [--online]
+
+FLAGS
+  --offline  set offline mode
+  --online   set online mode
+
+DESCRIPTION
+  Set mode of the app, either offline or online.
+
+EXAMPLES
+  $ xc setting mode --offline
+
+  $ xc setting mode --online
+```
+
+## `xc sync`
+
+Sync Data With CrossCopy Cloud
+
+```
+USAGE
+  $ xc sync
+
+DESCRIPTION
+  Sync Data With CrossCopy Cloud
+
+EXAMPLES
+  $ xc sync
+```
+
+_See code: [dist/commands/sync.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.0/dist/commands/sync.ts)_
+
+## `xc update [CHANNEL]`
+
+update the xc CLI
+
+```
+USAGE
+  $ xc update [CHANNEL] [-a] [-v <value> | -i] [--force]
 
 FLAGS
   -a, --available        Install a specific version.
-  -i, --interccpe      Interactively select version to install. This is ignored if a channel is provided.
+  -i, --interactive      Interactively select version to install. This is ignored if a channel is provided.
   -v, --version=<value>  Install a specific version.
   --force                Force a re-download of the requested version.
 
 DESCRIPTION
-  updaccpe ccp CLI
+  update the xc CLI
 
 EXAMPLES
   Update to the stable channel:
-ccp
-    $ ccp update stable
+
+    $ xc update stable
 
   Update to a specific version:
-ccp
-    $ ccp update --version 1.0.0
+
+    $ xc update --version 1.0.0
 
   Interactively select version:
-ccp
-    $ ccp update --interactive
+
+    $ xc update --interactive
 
   See available versions:
 
-    ccp update --available
+    $ xc update --available
 ```
 
 _See code: [@oclif/plugin-update](https://github.com/oclif/plugin-update/blob/v3.0.0/src/commands/update.ts)_
 
-## `ccp upload`
-ccp
+## `xc upload`
+
 Upload some content
 
 ```
 USAGE
-  $ ccp upload
-ccp
+  $ xc upload
+
 DESCRIPTION
-  Upccpsome content
+  Upload some content
 
 EXAMPLES
-  echo "content" | xcopy
+  echo "content" | xc
 
-  xcopy < content.txt
+  $ xc < content.txt
 ```
 
 _See code: [dist/commands/upload.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.0/dist/commands/upload.ts)_
+
+## `xc view`
+
+View Clipboard Data
+
+```
+USAGE
+  $ xc view
+
+DESCRIPTION
+  View Clipboard Data
+
+EXAMPLES
+  $ xc view
+```
+
+_See code: [dist/commands/view.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.0/dist/commands/view.ts)_
 <!-- commandsstop -->

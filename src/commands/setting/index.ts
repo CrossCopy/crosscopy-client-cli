@@ -1,11 +1,14 @@
 import {Command} from '@oclif/core';
+import {SettingConfig} from '../../config';
 
 export default class Setting extends Command {
-  static description = 'describe the command here';
+  setting = new SettingConfig(this.config.configDir);
+
+  static description = 'Setting';
 
   static examples = ['<%= config.bin %> <%= command.id %>'];
 
   public async run(): Promise<void> {
-    this.log('setting');
+    console.log(JSON.stringify(this.setting._config, null, 2));
   }
 }
