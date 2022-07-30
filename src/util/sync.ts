@@ -1,10 +1,10 @@
-import {operations as ops, requests} from '@crosscopy/graphql-schema';
+import {requests as req} from '@crosscopy/graphql-schema';
 import {plugin, db} from '@crosscopy/core';
 import clipboard from 'clipboardy';
 
 export const syncDownload = async (
-  idMapping: (ops.IdMapping | null)[],
-  newRecords: (requests.Rec | ops.Rec | null)[],
+  idMapping: (req.IdMapping | null)[],
+  newRecords: (req.Rec | req.Rec | null)[],
   pluginManager: plugin.PluginManager,
   dbService: db.DBService,
 ): Promise<void> => {
@@ -30,7 +30,7 @@ export const syncDownload = async (
         createdAt: rec!.createdAt,
         device: rec!.device,
         profile: rec!.profile,
-        type: rec!.type as unknown as ops.RecordType,
+        type: rec!.type as unknown as req.RecordType,
         userId: rec!.userId,
         value: rec!.value,
         expired: rec!.expired,

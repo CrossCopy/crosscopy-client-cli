@@ -1,5 +1,5 @@
 import {Command} from '@oclif/core';
-import {requests, operations as ops} from '@crosscopy/graphql-schema';
+import {requests, requests as req} from '@crosscopy/graphql-schema';
 import {AuthConfig, SettingConfig} from '../config';
 import {SocketIOService} from '@crosscopy/core';
 import {db} from '@crosscopy/core';
@@ -58,7 +58,7 @@ export default class Listen extends Command {
       type: rec.type,
       userId: rec.userId,
       value: rec.value,
-    })) as ops.TextRecInput[];
+    })) as req.TextRecInput[];
 
     SocketIOService.instance
       .init(this.setting.socketioUrl, '/crosscopy/ws/', this.auth.accessToken)
@@ -85,7 +85,7 @@ export default class Listen extends Command {
       })
       .on('notification', this.onNotification)
       .on('deleted', this.onDelete)
-      .on('uploaded', async (record: ops.Rec) => {
+      .on('uploaded', async (record: req.Rec) => {
         record.value = await pluginManager.download(record.value);
         const newRecord = await db.DBService.instance.RecRepo.save(record);
         cb.writeSync(newRecord.value);
@@ -108,7 +108,7 @@ export default class Listen extends Command {
         record.value = await pluginManager.upload(record.value);
         SocketIOService.instance.socket?.emit(
           'upload',
-          record as ops.TextRecInput,
+          record as req.TextRecInput,
         );
       },
       500,

@@ -32,6 +32,7 @@ USAGE
 * [`xc . PERSON`](#xc--person)
 * [`xc autocomplete [SHELL]`](#xc-autocomplete-shell)
 * [`xc clear`](#xc-clear)
+* [`xc delete [FILE]`](#xc-delete-file)
 * [`xc hello PERSON`](#xc-hello-person)
 * [`xc hello world`](#xc-hello-world)
 * [`xc help [COMMAND]`](#xc-help-command)
@@ -47,7 +48,7 @@ USAGE
 * [`xc plugins:uninstall PLUGIN...`](#xc-pluginsuninstall-plugin-2)
 * [`xc plugins update`](#xc-plugins-update)
 * [`xc setting`](#xc-setting)
-* [`xc setting mode`](#xc-setting-mode)
+* [`xc setting set`](#xc-setting-set)
 * [`xc sync`](#xc-sync)
 * [`xc update [CHANNEL]`](#xc-update-channel)
 * [`xc upload`](#xc-upload)
@@ -135,6 +136,41 @@ EXAMPLES
 ```
 
 _See code: [dist/commands/clear.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.0/dist/commands/clear.ts)_
+
+## `xc delete [FILE]`
+
+Delete Records, Flags can be combined, each flag will be evaluated separately.
+
+```
+USAGE
+  $ xc delete [FILE] [-a] [-s <value>] [-e <value>] [-y] [-i <value>] [-n <value>]
+
+FLAGS
+  -a, --all              delete all records
+  -e, --end=<value>      end index
+  -i, --idx=<value>      Index of record to delete
+  -n, --numDays=<value>  Delete records older than n days
+  -s, --start=<value>    start index
+  -y, --yes              Confirm Deletion without prompt
+
+DESCRIPTION
+  Delete Records, Flags can be combined, each flag will be evaluated separately.
+
+EXAMPLES
+  $ xc delete
+
+  $ xc delete --all
+
+  $ xc delete --all -y
+
+  $ xc delete --idx 6
+
+  $ xc delete --start 6 --end 10
+
+  $ xc delete --numDays=7
+```
+
+_See code: [dist/commands/delete.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.0/dist/commands/delete.ts)_
 
 ## `xc hello PERSON`
 
@@ -468,14 +504,14 @@ DESCRIPTION
 
 ## `xc setting`
 
-describe the command here
+Setting
 
 ```
 USAGE
   $ xc setting
 
 DESCRIPTION
-  describe the command here
+  Setting
 
 EXAMPLES
   $ xc setting
@@ -483,25 +519,24 @@ EXAMPLES
 
 _See code: [dist/commands/setting/index.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.0/dist/commands/setting/index.ts)_
 
-## `xc setting mode`
+## `xc setting set`
 
-Set mode of the app, either offline or online.
+Set Setting
 
 ```
 USAGE
-  $ xc setting mode [--offline] [--online]
+  $ xc setting set [--mode online|offline] [--server <value>]
 
 FLAGS
-  --offline  set offline mode
-  --online   set online mode
+  --mode=<option>   set mode
+                    <options: online|offline>
+  --server=<value>  [default: https://api.crosscopy.io] set server url
 
 DESCRIPTION
-  Set mode of the app, either offline or online.
+  Set Setting
 
 EXAMPLES
-  $ xc setting mode --offline
-
-  $ xc setting mode --online
+  $ xc setting set --mode=offline
 ```
 
 ## `xc sync`
@@ -583,7 +618,11 @@ View Clipboard Data
 
 ```
 USAGE
-  $ xc view
+  $ xc view [--uuid] [--id]
+
+FLAGS
+  --id    Display database (takes more space, but could be used to delete records)
+  --uuid  Display UUID (takes more space, but could be used to delete records)
 
 DESCRIPTION
   View Clipboard Data

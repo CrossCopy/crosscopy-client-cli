@@ -1,8 +1,7 @@
 import {Command, Flags} from '@oclif/core';
-import {CryptoService} from '@crosscopy/core';
+import {CryptoService, db} from '@crosscopy/core';
 import * as inquirer from 'inquirer';
-import {requests} from '@crosscopy/graphql-schema';
-import {operations as ops} from '@crosscopy/graphql-schema';
+import {requests as req} from '@crosscopy/graphql-schema';
 import cloneDeep from 'lodash/cloneDeep';
 
 /**
@@ -10,7 +9,7 @@ import cloneDeep from 'lodash/cloneDeep';
  *
  * ./bin/dev login -e user0@crosscopy.io -p password0
  */
-const {getSdk} = requests;
+const {getSdk} = req;
 import {GraphQLClient} from 'graphql-request';
 import {SettingConfig, AuthConfig} from '../config';
 
@@ -52,6 +51,16 @@ export default class Login extends Command {
     const password = flags.password || responses.password;
     if (!email || !password) throw new Error('Email and Password not defined');
 
+    // clear database
+    const dbService = db.DBService.instance;
+    if (!this.setting.dbPath) throw new Error('DB Path not defined');
+    await dbService.init(this.setting.dbPath);
+    this.log('Clear Old Database Data');
+    await dbService.RecRepo.createQueryBuilder()
+      .delete()
+      .where('1=1')
+      .execute();
+
     sdk
       .login({email, password})
       .then((res) => {
@@ -68,7 +77,7 @@ export default class Login extends Command {
 
         const userOnly = cloneDeep(res.login.user);
         delete userOnly?.records;
-        this.auth.user = userOnly as unknown as ops.User;
+        this.auth.user = userOnly as unknown as req.User;
         const crypto = CryptoService.instance;
         crypto.init(password);
         this.auth.passwordHash = crypto.passwordHash;

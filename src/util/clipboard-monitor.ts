@@ -21,8 +21,6 @@ export default (): {
         const latestCbContent = cb.readSync();
         const record = await dbService.selectLastRecord();
         if (record && record.value && record.value !== latestCbContent) {
-          console.log(`prev: ${record.value}`);
-          console.log(`curr: ${latestCbContent}`);
           callback(latestCbContent);
         }
       }, freq);

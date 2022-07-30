@@ -17,8 +17,8 @@
     "/oclif.manifest.json"
   ],
   "dependencies": {
-    "@crosscopy/core": "^0.0.3-alpha.14",
-    "@crosscopy/graphql-schema": "^0.1.0-pre-alpha.18",
+    "@crosscopy/core": "^0.0.3-alpha.16",
+    "@crosscopy/graphql-schema": "^0.1.1-pre-alpha.3",
     "@oclif/core": "^1",
     "@oclif/plugin-autocomplete": "^1.3.0",
     "@oclif/plugin-help": "^5",
@@ -80,6 +80,9 @@
         "./src/hooks/init/wakeup"
       ]
     },
+    "macos": {
+      "identifier": "io.crosscopy.cli"
+    },
     "plugins": [
       "@oclif/plugin-help",
       "@oclif/plugin-plugins",
@@ -108,7 +111,8 @@
     "version": "oclif readme && git add README.md",
     "codegen": "graphql-codegen --config codegen.yml",
     "pack": "npx oclif pack tarballs",
-    "upload": "npx oclif upload tarballs"
+    "upload": "npx oclif upload tarballs",
+    "update:crosscopy": "npm i @crosscopy/graphql-schema@latest && npm i @crosscopy/core@latest"
   },
   "engines": {
     "node": ">=12.0.0"

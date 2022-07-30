@@ -52,7 +52,7 @@ export default class View extends Command {
       }
     }
 
-    if (flags.uuid) {
+    if (flags.id) {
       for (const [idx, r] of allRecords.entries()) {
         displayRecords[idx].id = r.id;
       }
@@ -62,3 +62,4 @@ export default class View extends Command {
     console.table(displayRecords);
   }
 }
+

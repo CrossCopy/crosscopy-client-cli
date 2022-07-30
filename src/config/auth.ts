@@ -1,11 +1,11 @@
 import Config from './config';
-import {operations as ops} from '@crosscopy/graphql-schema';
+import {requests as req} from '@crosscopy/graphql-schema';
 
 export type Auth = {
   passwordHash: string | null;
   accessToken: string | null;
   refreshToken: string | null;
-  user: ops.User | null;
+  user: req.User | null;
 };
 
 export const authInitConfig: Auth = {
@@ -17,39 +17,39 @@ export const authInitConfig: Auth = {
 
 export default class AuthConfig extends Config<Auth> {
   get passwordHash(): string | null {
-    return this._config.passwordHash
+    return this._config.passwordHash;
   }
 
   set passwordHash(value: string | null) {
-    this._config.passwordHash = value
-    this.save()
+    this._config.passwordHash = value;
+    this.save();
   }
 
   get accessToken(): string | null {
-    return this._config.accessToken
+    return this._config.accessToken;
   }
 
   set accessToken(value: string | null) {
-    this._config.accessToken = value
-    this.save()
+    this._config.accessToken = value;
+    this.save();
   }
 
   get refreshToken(): string | null {
-    return this._config.refreshToken
+    return this._config.refreshToken;
   }
 
   set refreshToken(value: string | null) {
-    this._config.refreshToken = value
-    this.save()
+    this._config.refreshToken = value;
+    this.save();
   }
 
-  get user(): ops.User | null {
-    return this._config.user
+  get user(): req.User | null {
+    return this._config.user;
   }
 
-  set user(value: ops.User | null) {
-    this._config.user = value
-    this.save()
+  set user(value: req.User | null) {
+    this._config.user = value;
+    this.save();
   }
 
   constructor(configDir: string) {
