@@ -3,12 +3,12 @@ import {SettingConfig, AuthConfig} from '../config';
 import {GraphQLClient} from 'graphql-request';
 import {db} from '@crosscopy/core';
 import {generatePluginManager} from '../util/plugin';
-import {requests} from '@crosscopy/graphql-schema';
+import {requests as req} from '@crosscopy/graphql-schema';
 import clipboard from 'clipboardy';
 import {v4 as uuidv4} from 'uuid';
 import {syncDownload} from '../util/sync';
 
-const {getSdk} = requests;
+const {getSdk} = req;
 
 export default class Sync extends Command {
   auth = new AuthConfig(this.config.configDir);
@@ -38,15 +38,15 @@ export default class Sync extends Command {
       await dbService.createRec({value: cbStr, uuid: uuidv4()});
     }
 
-    const localOnlyRecords = await dbService.selectLocalOnlyRecords();
-    const recordsToUpload = localOnlyRecords.map((r) => ({
+    const notSyncedRecords = await dbService.selectNotSyncedRecords();
+    const recordsToUpload = notSyncedRecords.map((r) => ({
       type: r.type,
       value: r.value,
       device: r.device,
       profile: r.profile,
       uuid: r.uuid,
       createdAt: r.createdAt,
-    })) as requests.TextRecInput[];
+    })) as req.TextRecInput[];
 
     const encryptPromises = recordsToUpload.map((rec) =>
       pluginManager.upload(rec.value),
@@ -57,19 +57,25 @@ export default class Sync extends Command {
     }
 
     const sdk = getSdk(gqlClient);
-    const res = await sdk.sync({
-      uuids,
-      records: recordsToUpload,
-    });
 
-    if (!res.sync) throw new Error('Unexpected Error, wrong sync response');
-    const {idMapping, newRecords} = res.sync;
-    if (!this.setting._config.dbPath) throw new Error('DB Path not defined');
-    syncDownload(
-      idMapping,
-      newRecords as requests.Rec[],
-      pluginManager,
-      dbService,
-    );
+    // sdk.syncByLatestCreationTime({
+    //   latestCreationTime: '',
+    //   records: [],
+    // });
+    // const res = await sdk.sync({
+    //   uuids,
+    //   records: recordsToUpload,
+    // });
+
+    // if (!res.sync) throw new Error('Unexpected Error, wrong sync response');
+    // const {idMapping, newRecords} = res.sync;
+    // if (!this.setting._config.dbPath) throw new Error('DB Path not defined');
+    // syncDownload(
+    //   idMapping,
+    //   newRecords as requests.Rec[],
+    //   pluginManager,
+    //   dbService,
+    // );
+    // sdk.
   }
 }

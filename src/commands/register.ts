@@ -10,7 +10,10 @@ export default class Register extends Command {
   static description = 'describe the command here';
   setting = new SettingConfig(this.config.configDir);
 
-  static examples = ['<%= config.bin %> <%= command.id %>'];
+  static examples = [
+    '<%= config.bin %> <%= command.id %> -e example@email.com -u username -p password',
+    '<%= config.bin %> <%= command.id %> -e example@email.com -u username',
+  ];
 
   static flags = {
     email: Flags.string({char: 'e', description: 'Email'}),
