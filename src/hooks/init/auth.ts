@@ -33,7 +33,7 @@ const hook: Hook<'init'> = async function (_options) {
       // refresh token is valid, refresh access token
       this.log('Refreshing access token');
       try {
-        const res = await sdk.RefreshAccessToken({
+        const res = await sdk.refreshAccessToken({
           refreshToken: auth.refreshToken,
         });
         if (res.refreshAccessToken?.accessToken) {

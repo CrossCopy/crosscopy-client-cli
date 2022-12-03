@@ -3,6 +3,7 @@
   "rules": {
     "semi": ["error", "always"],
     // "new-cap": ["error", "off"],
+    "no-warning-comments": ["off"],
     "indent": [
       2,
       2,

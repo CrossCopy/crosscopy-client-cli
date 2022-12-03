@@ -3,6 +3,7 @@ import {CryptoService, db} from '@crosscopy/core';
 import * as inquirer from 'inquirer';
 import {requests as req} from '@crosscopy/graphql-schema';
 import cloneDeep from 'lodash/cloneDeep';
+import {generatePluginManager} from '../util/plugin';
 
 /**
  * Sample Command
@@ -55,15 +56,18 @@ export default class Login extends Command {
     // clear database
     const dbService = db.DBService.instance;
     if (!this.setting.dbPath) throw new Error('DB Path not defined');
+    console.log(this.setting.dbPath);
     await dbService.init(this.setting.dbPath);
     this.log('Clear Old Database Data');
-    await dbService.RecRepo.createQueryBuilder()
-      .delete()
-      .where('1=1')
-      .execute();
+
+    // TODO: implement clear database method in dbService
+
+    await dbService.RecRepo.createQueryBuilder().delete().execute();
+    await dbService.DeviceRepo.createQueryBuilder().delete().execute();
+    await dbService.ProfileRepo.createQueryBuilder().delete().execute();
     sdk
       .login({email, password})
-      .then((res) => {
+      .then(async (res) => {
         if (!res.login)
           throw new Error('Unexpected Error, wrong login response');
         this.auth.accessToken = res.login.accessToken;
@@ -75,58 +79,73 @@ export default class Login extends Command {
           );
         }
 
-        const devices = res.login.user?.devices;
-        console.log(devices);
+        const devices =
+          res.login.user?.devices?.map((d) => ({
+            id: d?.id,
+            deviceName: d?.deviceName,
+            preferences: d?.preferences,
+          })) || [];
+        const profiles =
+          res.login.user?.profiles?.map((p) => ({
+            id: p?.id,
+            profileName: p?.profileName,
+            preferences: p?.preferences,
+          })) || [];
 
-        // const devices =
-        //   res.login.user.?.map((d) => ({
-        //     id: d?.id,
-        //     deviceName: d?.deviceName,
-        //   })) || [];
-        // const profiles =
-        //   res.login.user?.profiles?.map((p) => ({
-        //     id: p?.id,
-        //     profileName: p?.profileName,
-        //   })) || [];
-        // const records =
-        //   res.login.user?.records?.map((r) => ({
-        //     id: r?.id,
-        //     uuid: r?.uuid,
-        //     createdAt: r?.createdAt,
-        //     device: r?.device,
-        //     profile: r?.profile,
-        //     type: r?.type,
-        //     value: r?.value,
-        //     expired: r?.expired,
-        //     deleted: r?.deleted,
-        //     deletedAt: r?.deletedAt,
-        //     insync: true,
-        //   })) || [];
-        // dbService.DeviceRepo.createQueryBuilder()
-        //   .insert()
-        //   .values(devices)
-        //   .execute();
+        dbService.DeviceRepo.createQueryBuilder()
+          .insert()
+          .values(devices)
+          .execute();
 
-        // dbService.ProfileRepo.createQueryBuilder()
-        //   .insert()
-        //   .values(profiles)
-        //   .execute();
+        dbService.ProfileRepo.createQueryBuilder()
+          .insert()
+          .values(profiles)
+          .execute();
 
-        // dbService.RecRepo.createQueryBuilder()
-        //   .insert()
-        //   .values(records)
-        //   .execute();
-        // dbService.RecRepo.create({device: {}});
         const userOnly = cloneDeep(res.login.user);
         delete userOnly?.records;
+
         this.auth.user = userOnly as unknown as req.User;
         const crypto = CryptoService.instance;
         crypto.init(password);
         this.auth.passwordHash = crypto.passwordHash;
-        console.log(res.login);
+        // console.log(res.login);
         if (res.login.message) {
           this.log(res.login?.message);
         }
+
+        // TODO: extract multi-records insertion as a helper
+        const records =
+          res.login.user?.records?.map((r) => ({
+            id: r?.id,
+            uuid: r?.uuid,
+            createdAt: r?.createdAt,
+            device: r!.device!,
+            profile: r!.profile!,
+            type: r?.type,
+            value: r?.value,
+            expired: r?.expired,
+            deleted: r?.deleted,
+            deletedAt: r?.deletedAt,
+            userId: res.login?.user?.id,
+            insync: 1,
+          })) || [];
+        const pluginManager = await generatePluginManager(
+          this.auth.passwordHash,
+        );
+
+        // TODO: consider extract multi-record decryption as a helper
+        const decryptRecords = await Promise.all(
+          records.map((rec) => pluginManager.download(rec.value || '')),
+        );
+        for (const [i, rec] of records.entries()) {
+          rec.value = decryptRecords.at(i);
+        }
+
+        dbService.RecRepo.createQueryBuilder()
+          .insert()
+          .values(records)
+          .execute();
 
         this.log(`Login As ${this.auth.user.username}`);
       })

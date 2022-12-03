@@ -38,7 +38,7 @@ export default class Listen extends Command {
     // const socketioUrl = this.setting.socketioUrl;
     // if (!this.auth.passwordHash)
     //   throw new Error('No Decryption Key Found, Please Login Again');
-    // const pluginManager = await generatePluginManager(this.auth.passwordHash);
+    // const pluginManager = await generatePluginManager(this.auth.passwordHash);// const pluginManager = await generatePluginManager(this.auth.passwordHash);
     // this.log(`connecting to ${socketioUrl}`);
     // const allUUIDs = (
     //   await dbService.RecRepo.find({

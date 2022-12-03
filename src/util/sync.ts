@@ -21,23 +21,33 @@ export const syncDownload = async (
     }
   }
 
-  const createRecordPromise = newRecords
-    .filter((rec) => rec)
-    .map((rec) =>
-      dbService.createRec({
-        id: rec!.id,
-        uuid: rec!.uuid,
-        createdAt: rec!.createdAt,
-        device: rec!.device,
-        profile: rec!.profile,
-        type: rec!.type as unknown as req.RecordType,
-        // userId: rec!.userId,
-        value: rec!.value,
-        expired: rec!.expired,
-        deleted: rec!.deleted,
-      }),
-    );
-  await Promise.all(createRecordPromise);
+  // const gqlDeviceToDBDevice = (gqlDevice: req.Device):  => {
+  //   return {
+  //     id: gqlDevice.id,
+  //     deviceName: gqlDevice.deviceName,
+  //     preferences: gqlDevice.preferences
+  //   }
+  // }
+
+
+  // TODO: use query builder to insert multiple records, check login command
+  // const createRecordPromise = newRecords
+  //   .filter((rec) => rec)
+  //   .map((rec) =>
+  //     dbService.createRec({
+  //       id: rec!.id,
+  //       uuid: rec!.uuid,
+  //       createdAt: rec!.createdAt,
+  //       device: rec!.device!,
+  //       profile: rec!.profile!,
+  //       type: rec!.type as unknown as req.RecordType,
+  //       // userId: rec!.userId,
+  //       value: rec!.value,
+  //       expired: rec!.expired,
+  //       deleted: rec!.deleted,
+  //     }),
+  //   );
+  // await Promise.all(createRecordPromise);
   console.log('Sync Success');
   console.log(`Downloaded ${newRecords.length} Records`);
 
