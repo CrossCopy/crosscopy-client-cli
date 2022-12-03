@@ -1,6 +1,7 @@
 import {Command, Flags} from '@oclif/core';
 import {SettingConfig} from '../../config';
 import {Mode} from '../../config/setting';
+import os from 'os'
 
 export default class Setting extends Command {
   setting = new SettingConfig(this.config.configDir);
@@ -18,16 +19,31 @@ export default class Setting extends Command {
       description: 'set server url',
       default: 'https://api.crosscopy.io',
     }),
+    device: Flags.string({
+      description: 'set device name',
+      default: `${os.hostname()}-cli`
+    })
   };
 
   public async run(): Promise<void> {
     const {flags} = await this.parse(Setting);
     if (flags.mode !== undefined) {
+      /*
+       when switching to online mode, need to take care of device name changing and profile
+       if device not found, ask user to choose from an existing device, rename it locally, or create a new device
+
+        also sync profile
+       */
       this.setting.mode = flags.mode as Mode;
     }
 
     if (flags.server !== undefined) {
       this.setting.server = flags.server;
+    }
+
+    if (flags.device !== undefined) {
+      // if in online mode, need to rename device or create new device
+      this.setting.deviceName = flags.device
     }
   }
 }

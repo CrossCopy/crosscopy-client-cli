@@ -33,8 +33,6 @@ USAGE
 * [`xc autocomplete [SHELL]`](#xc-autocomplete-shell)
 * [`xc clear`](#xc-clear)
 * [`xc delete [FILE]`](#xc-delete-file)
-* [`xc hello PERSON`](#xc-hello-person)
-* [`xc hello world`](#xc-hello-world)
 * [`xc help [COMMAND]`](#xc-help-command)
 * [`xc listen`](#xc-listen)
 * [`xc login`](#xc-login)
@@ -47,6 +45,7 @@ USAGE
 * [`xc plugins:uninstall PLUGIN...`](#xc-pluginsuninstall-plugin-1)
 * [`xc plugins:uninstall PLUGIN...`](#xc-pluginsuninstall-plugin-2)
 * [`xc plugins update`](#xc-plugins-update)
+* [`xc register`](#xc-register)
 * [`xc setting`](#xc-setting)
 * [`xc setting set`](#xc-setting-set)
 * [`xc sync`](#xc-sync)
@@ -171,46 +170,6 @@ EXAMPLES
 ```
 
 _See code: [dist/commands/delete.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.0/dist/commands/delete.ts)_
-
-## `xc hello PERSON`
-
-Say hello
-
-```
-USAGE
-  $ xc hello [PERSON] -f <value>
-
-ARGUMENTS
-  PERSON  Person to say hello to
-
-FLAGS
-  -f, --from=<value>  (required) Whom is saying hello
-
-DESCRIPTION
-  Say hello
-
-EXAMPLES
-  $ oex hello friend --from oclif
-  hello friend from oclif! (./src/commands/hello/index.ts)
-```
-
-_See code: [dist/commands/hello/index.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.0/dist/commands/hello/index.ts)_
-
-## `xc hello world`
-
-Say hello world
-
-```
-USAGE
-  $ xc hello world
-
-DESCRIPTION
-  Say hello world
-
-EXAMPLES
-  $ oex hello world
-  hello world! (./src/commands/hello/world.ts)
-```
 
 ## `xc help [COMMAND]`
 
@@ -501,6 +460,30 @@ FLAGS
 DESCRIPTION
   Update installed plugins.
 ```
+
+## `xc register`
+
+describe the command here
+
+```
+USAGE
+  $ xc register [-e <value>] [-u <value>] [-p <value>]
+
+FLAGS
+  -e, --email=<value>     Email
+  -p, --password=<value>  Password
+  -u, --username=<value>  Username
+
+DESCRIPTION
+  describe the command here
+
+EXAMPLES
+  $ xc register -e example@email.com -u username -p password
+
+  $ xc register -e example@email.com -u username
+```
+
+_See code: [dist/commands/register.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.0/dist/commands/register.ts)_
 
 ## `xc setting`
 

@@ -1,3 +1,5 @@
+import {db} from '@crosscopy/core';
+import os from 'node:os';
 import Config from './config';
 
 export type Mode = 'offline' | 'online';
@@ -7,6 +9,8 @@ export type Setting = {
   server: string;
   dbPath: string;
   mode: Mode;
+  deviceName: string;
+  profileName: string;
 };
 
 export const settingInitConfig: Setting = {
@@ -14,9 +18,27 @@ export const settingInitConfig: Setting = {
   server: 'https://api.crosscopy.io',
   dbPath: '',
   mode: 'online',
+  deviceName: `${os.hostname()}-cli`,
+  profileName: 'Default',
 };
 
 export default class SettingConfig extends Config<Setting> {
+  // private static instance: SettingConfig;
+  // private constructor() {}
+
+  constructor(configDir: string) {
+    super(configDir, 'setting.json', settingInitConfig);
+  }
+
+  get deviceName(): string {
+    return this._config.deviceName;
+  }
+
+  set deviceName(value: string) {
+    this._config.deviceName = value;
+    this.save();
+  }
+
   get server(): string {
     return this._config.server;
   }
@@ -44,8 +66,12 @@ export default class SettingConfig extends Config<Setting> {
     this.save();
   }
 
-  constructor(configDir: string) {
-    super(configDir, 'setting.json', settingInitConfig);
+  get device(): Promise<db.Device> {
+    return db.DBService.instance.deviceByName(this.deviceName);
+  }
+
+  get profile(): Promise<db.Profile> {
+    return db.DBService.instance.profileByName(this.deviceName);
   }
 
   get socketioUrl(): string {

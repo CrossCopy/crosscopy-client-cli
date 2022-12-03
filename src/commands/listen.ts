@@ -32,86 +32,86 @@ export default class Listen extends Command {
   }
 
   public async run(): Promise<void> {
-    if (!this.auth.accessToken) return this.error('Not Authenticated');
-    const dbService = db.DBService.instance;
-    await dbService.init(this.setting.dbPath);
-    const socketioUrl = this.setting.socketioUrl;
-    if (!this.auth.passwordHash)
-      throw new Error('No Decryption Key Found, Please Login Again');
-    const pluginManager = await generatePluginManager(this.auth.passwordHash);
-    this.log(`connecting to ${socketioUrl}`);
-    const allUUIDs = (
-      await dbService.RecRepo.find({
-        select: ['uuid'],
-      })
-    ).map((rec) => rec.uuid);
-    const clientSideOnlyRecords = await dbService.RecRepo.find({
-      // eslint-disable-next-line new-cap
-      where: {id: IsNull()},
-    });
+    // if (!this.auth.accessToken) return this.error('Not Authenticated');
+    // const dbService = db.DBService.instance;
+    // await dbService.init(this.setting.dbPath);
+    // const socketioUrl = this.setting.socketioUrl;
+    // if (!this.auth.passwordHash)
+    //   throw new Error('No Decryption Key Found, Please Login Again');
+    // const pluginManager = await generatePluginManager(this.auth.passwordHash);
+    // this.log(`connecting to ${socketioUrl}`);
+    // const allUUIDs = (
+    //   await dbService.RecRepo.find({
+    //     select: ['uuid'],
+    //   })
+    // ).map((rec) => rec.uuid);
+    // const clientSideOnlyRecords = await dbService.RecRepo.find({
+    //   // eslint-disable-next-line new-cap
+    //   where: {id: IsNull()},
+    // });
 
-    const clientSideOnlyRecords2 = clientSideOnlyRecords.map((rec) => ({
-      uuid: rec.uuid,
-      createdAt: rec.createdAt,
-      device: rec.device,
-      profile: rec.profile,
-      type: rec.type,
-      userId: rec.userId,
-      value: rec.value,
-    })) as req.TextRecInput[];
+    // const clientSideOnlyRecords2 = clientSideOnlyRecords.map((rec) => ({
+    //   uuid: rec.uuid,
+    //   createdAt: rec.createdAt,
+    //   device: rec.device,
+    //   profile: rec.profile,
+    //   type: rec.type,
+    //   userId: rec.userId,
+    //   value: rec.value,
+    // })) as req.TextRecInput[];
 
-    SocketIOService.instance
-      .init(this.setting.socketioUrl, '/crosscopy/ws/', this.auth.accessToken)
-      .connect(allUUIDs, clientSideOnlyRecords2)
-      .on('init', async (syncResponse: requests.SyncResponse) => {
-        // this.log('init');
-        // console.log(records);
-        // console.log(latestInUserIds);
-        console.log(syncResponse);
-        const {idMapping, newRecords} = syncResponse;
-        console.log(idMapping);
-        console.log(newRecords);
-        if (idMapping === undefined || newRecords === undefined) {
-          this.log('Sync Error on Server Side, Probably Duplicate Key');
-          // exit(1);
-        } else {
-          await syncDownload(
-            idMapping,
-            newRecords as requests.Rec[],
-            pluginManager,
-            dbService,
-          );
-        }
-      })
-      .on('notification', this.onNotification)
-      .on('deleted', this.onDelete)
-      .on('uploaded', async (record: req.Rec) => {
-        record.value = await pluginManager.download(record.value);
-        const newRecord = await db.DBService.instance.RecRepo.save(record);
-        cb.writeSync(newRecord.value);
-        console.log('onUpload');
-        console.log(newRecord);
-      })
-      .on('updated', this.onUpdate);
+    // SocketIOService.instance
+    //   .init(this.setting.socketioUrl, '/crosscopy/ws/', this.auth.accessToken)
+    //   .connect(allUUIDs, clientSideOnlyRecords2)
+    //   .on('init', async (syncResponse: requests.SyncResponse) => {
+    //     // this.log('init');
+    //     // console.log(records);
+    //     // console.log(latestInUserIds);
+    //     console.log(syncResponse);
+    //     const {idMapping, newRecords} = syncResponse;
+    //     console.log(idMapping);
+    //     console.log(newRecords);
+    //     if (idMapping === undefined || newRecords === undefined) {
+    //       this.log('Sync Error on Server Side, Probably Duplicate Key');
+    //       // exit(1);
+    //     } else {
+    //       await syncDownload(
+    //         idMapping,
+    //         newRecords as requests.Rec[],
+    //         pluginManager,
+    //         dbService,
+    //       );
+    //     }
+    //   })
+    //   .on('notification', this.onNotification)
+    //   .on('deleted', this.onDelete)
+    //   .on('uploaded', async (record: req.Rec) => {
+    //     record.value = await pluginManager.download(record.value);
+    //     const newRecord = await db.DBService.instance.RecRepo.save(record);
+    //     cb.writeSync(newRecord.value);
+    //     console.log('onUpload');
+    //     console.log(newRecord);
+    //   })
+    //   .on('updated', this.onUpdate);
 
-    const cbListener = getCbListener();
-    // this.log('Start Clipboard Listener');
-    cbListener.listen(
-      dbService,
-      async (content) => {
-        const uuid = uuidv4();
-        const record = await dbService.createRec({
-          value: content,
-          uuid: uuid,
-        });
-        console.log('clipboard content updated');
-        record.value = await pluginManager.upload(record.value);
-        SocketIOService.instance.socket?.emit(
-          'upload',
-          record as req.TextRecInput,
-        );
-      },
-      500,
-    );
+    // const cbListener = getCbListener();
+    // // this.log('Start Clipboard Listener');
+    // cbListener.listen(
+    //   dbService,
+    //   async (content) => {
+    //     const uuid = uuidv4();
+    //     const record = await dbService.createRec({
+    //       value: content,
+    //       uuid: uuid,
+    //     });
+    //     console.log('clipboard content updated');
+    //     record.value = await pluginManager.upload(record.value);
+    //     SocketIOService.instance.socket?.emit(
+    //       'upload',
+    //       record as req.TextRecInput,
+    //     );
+    //   },
+    //   500,
+    // );
   }
 }

@@ -33,6 +33,9 @@ const hook: Hook<'init'> = async function (_options) {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const setting = new SettingConfig(this.config.configDir);
+
+  // TODO: init profile and device
+
   // this.log(`setting config file: ${setting.configFilePath}`);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const auth = new AuthConfig(this.config.configDir);

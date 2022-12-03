@@ -26,14 +26,14 @@ const hook: Hook<'init'> = async function (_options) {
   if (accessTokenExpired) {
     if (refreshTokenExpired) {
       // both tokens expired, logout
-      this.warn('Authentication expired, please login again');
+      this.log('Authentication expired, please login again');
       auth.accessToken = null;
       auth.refreshToken = null;
     } else {
       // refresh token is valid, refresh access token
       this.log('Refreshing access token');
       try {
-        const res = await sdk.refreshAccessToken({
+        const res = await sdk.RefreshAccessToken({
           refreshToken: auth.refreshToken,
         });
         if (res.refreshAccessToken?.accessToken) {

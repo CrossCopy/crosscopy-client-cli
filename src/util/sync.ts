@@ -31,7 +31,7 @@ export const syncDownload = async (
         device: rec!.device,
         profile: rec!.profile,
         type: rec!.type as unknown as req.RecordType,
-        userId: rec!.userId,
+        // userId: rec!.userId,
         value: rec!.value,
         expired: rec!.expired,
         deleted: rec!.deleted,

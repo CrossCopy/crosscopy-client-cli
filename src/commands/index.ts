@@ -1,31 +1,18 @@
 import {Command, Flags} from '@oclif/core';
+import {readStdin} from "../util/stdin";
 
-export default class Hello extends Command {
-  static description = 'Say hello';
+export default class Index extends Command {
+  static description = 'Root Command';
 
-  static examples = [
-    `$ oex hello friend --from oclif
-hello friend from oclif! (./src/commands/hello/index.ts)
-`,
-  ];
+  static examples = [];
 
-  static flags = {
-    from: Flags.string({
-      char: 'f',
-      description: 'Whom is saying hello',
-      required: true,
-    }),
-  };
+  static flags = {};
 
-  static args = [
-    {name: 'person', description: 'Person to say hello to', required: true},
-  ];
+  static args = [];
 
   async run(): Promise<void> {
-    const {args, flags} = await this.parse(Hello);
-
-    this.log(
-      `hello ${args.person} from ${flags.from}! (./src/commands/hello/index.ts)`,
-    );
+    const input = await readStdin()
+    this.log(input);
+    this.log("hello")
   }
 }

@@ -28,35 +28,40 @@ export default class Sync extends Command {
       },
     });
     if (!this.auth.passwordHash)
-      throw new Error('No Decryption Key Found, Please Login Again');
+      throw new Error('No Decryption Key Found, Please Login');
     const pluginManager = await generatePluginManager(this.auth.passwordHash);
 
-    const cbStr = clipboard.readSync();
+    const cbStr = clipboard.readSync(); // current clipboard text
     const lastRec = await dbService.selectLastRecord();
 
     if (!lastRec || (lastRec && lastRec.value !== cbStr)) {
-      await dbService.createRec({value: cbStr, uuid: uuidv4()});
+      await dbService.createRec({
+        value: cbStr,
+        uuid: uuidv4(),
+        device: await this.setting.device,
+        profile: await this.setting.profile,
+      });
     }
 
     const notSyncedRecords = await dbService.selectNotSyncedRecords();
-    const recordsToUpload = notSyncedRecords.map((r) => ({
-      type: r.type,
-      value: r.value,
-      device: r.device,
-      profile: r.profile,
-      uuid: r.uuid,
-      createdAt: r.createdAt,
-    })) as req.TextRecInput[];
+    // const recordsToUpload = notSyncedRecords.map((r) => ({
+    //   type: r.type,
+    //   value: r.value,
+    //   device: r.device,
+    //   profile: r.profile,
+    //   uuid: r.uuid,
+    //   createdAt: r.createdAt,
+    // })) as req.TextRecInput[];
 
-    const encryptPromises = recordsToUpload.map((rec) =>
-      pluginManager.upload(rec.value),
-    );
-    const encryptedValues = await Promise.all(encryptPromises);
-    for (const [i, r] of recordsToUpload.entries()) {
-      r.value = encryptedValues[i];
-    }
+    // const encryptPromises = recordsToUpload.map((rec) =>
+    //   pluginManager.upload(rec.value),
+    // );
+    // const encryptedValues = await Promise.all(encryptPromises);
+    // for (const [i, r] of recordsToUpload.entries()) {
+    //   r.value = encryptedValues[i];
+    // }
 
-    const sdk = getSdk(gqlClient);
+    // const sdk = getSdk(gqlClient);
 
     // sdk.syncByLatestCreationTime({
     //   latestCreationTime: '',

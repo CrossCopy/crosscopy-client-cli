@@ -38,7 +38,7 @@ export default class View extends Command {
       Value: string;
       'Created At': string;
       UUID?: string;
-      id?: string | null;
+      id?: number | null;
     };
 
     const displayRecords: DisplayTableCols[] = allRecords.map((r) => ({

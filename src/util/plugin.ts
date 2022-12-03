@@ -3,10 +3,8 @@ import {plugin} from '@crosscopy/core';
 const {PluginManager, corePlugins} = plugin;
 
 // TODO: make this plugin manager generator a singleton class
-export const generatePluginManager = async (passwordHash: string) => {
-  const encryptionPlugin = new corePlugins.EncryptionPlugin({
-    passwordHash: passwordHash,
-  });
+export const generatePluginManager = async (passwordHash: string): Promise<plugin.PluginManager> => {
+  const encryptionPlugin = new corePlugins.EncryptionPlugin({passwordHash});
   // const notionPlugin = new externalPlugins.NotionPlugin();
   const headPlugins: plugin.CorePlugin[] = [];
   const tailPlugins: plugin.CorePlugin[] = [encryptionPlugin];
