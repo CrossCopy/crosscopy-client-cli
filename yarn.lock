@@ -517,10 +517,10 @@
   resolved "https://registry.npmjs.org/@colors/colors/-/colors-1.5.0.tgz"
   integrity sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==
 
-"@crosscopy/core@^0.0.4-alpha.5":
-  version "0.0.4-alpha.5"
-  resolved "https://npm.pkg.github.com/download/@CrossCopy/core/0.0.4-alpha.5/de10d0b9ccfa9743c3d6e8bf6f169782bff1ee03"
-  integrity sha512-yyW3W7PWglGNWVwhs++TcI+o8O3RluMjILe1A0LDMqdIKPTxZklZm3xLgDbAUZEIZPo/TgqKgiGZF4kLc+eyeQ==
+"@crosscopy/core@^0.0.4-alpha.6":
+  version "0.0.4-alpha.6"
+  resolved "https://npm.pkg.github.com/download/@CrossCopy/core/0.0.4-alpha.6/968e7a7401fa2dd5c5f2949cbe1ccb84c820447e#968e7a7401fa2dd5c5f2949cbe1ccb84c820447e"
+  integrity sha512-lQkhN6tCAvNo1+L1EKyDIhz3RJCC+EvH6F+aWm0gcQ/AL+2UNgFnnaznWNLG/29AYXamjCodKzAQvp5FRGXPmg==
   dependencies:
     "@crosscopy/graphql-schema" "^0.1.2-pre-alpha.1"
     "@graphql-typed-document-node/core" "^3.1.1"

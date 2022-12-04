@@ -60,11 +60,7 @@ export default class Login extends Command {
     await dbService.init(this.setting.dbPath);
     this.log('Clear Old Database Data');
 
-    // TODO: implement clear database method in dbService
-
-    await dbService.RecRepo.createQueryBuilder().delete().execute();
-    await dbService.DeviceRepo.createQueryBuilder().delete().execute();
-    await dbService.ProfileRepo.createQueryBuilder().delete().execute();
+    await dbService.clear();
     sdk
       .login({email, password})
       .then(async (res) => {
@@ -79,28 +75,21 @@ export default class Login extends Command {
           );
         }
 
+        // TODO: remove the "!"
         const devices =
           res.login.user?.devices?.map((d) => ({
-            id: d?.id,
-            deviceName: d?.deviceName,
-            preferences: d?.preferences,
+            id: d!.id,
+            deviceName: d!.deviceName,
+            preferences: d!.preferences,
           })) || [];
         const profiles =
           res.login.user?.profiles?.map((p) => ({
-            id: p?.id,
-            profileName: p?.profileName,
-            preferences: p?.preferences,
+            id: p!.id,
+            profileName: p!.profileName,
+            preferences: p!.preferences,
           })) || [];
-
-        dbService.DeviceRepo.createQueryBuilder()
-          .insert()
-          .values(devices)
-          .execute();
-
-        dbService.ProfileRepo.createQueryBuilder()
-          .insert()
-          .values(profiles)
-          .execute();
+        await dbService.createDevices(devices);
+        await dbService.createProfiles(profiles);
 
         const userOnly = cloneDeep(res.login.user);
         delete userOnly?.records;
@@ -142,7 +131,7 @@ export default class Login extends Command {
           rec.value = decryptRecords.at(i);
         }
 
-        dbService.RecRepo.createQueryBuilder()
+        await dbService.RecRepo.createQueryBuilder()
           .insert()
           .values(records)
           .execute();
