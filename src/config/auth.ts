@@ -34,6 +34,10 @@ export default class AuthConfig extends Config<Auth> {
     this.save();
   }
 
+  get BearerAccessToken(): string {
+    return `Bearer ${this.accessToken}`;
+  }
+
   get refreshToken(): string | null {
     return this._config.refreshToken;
   }
@@ -41,6 +45,10 @@ export default class AuthConfig extends Config<Auth> {
   set refreshToken(value: string | null) {
     this._config.refreshToken = value;
     this.save();
+  }
+
+  get BearerRefreshToken(): string {
+    return `Bearer ${this.refreshToken}`;
   }
 
   get user(): req.User | null {

@@ -2,6 +2,8 @@ import {requests as req} from '@crosscopy/graphql-schema';
 import {plugin, db} from '@crosscopy/core';
 import clipboard from 'clipboardy';
 
+const {getTextPayload} = plugin;
+
 export const syncDownload = async (
   idMapping: (req.IdMapping | null)[],
   newRecords: (req.Rec | req.Rec | null)[],
@@ -11,7 +13,9 @@ export const syncDownload = async (
   const decryptPromises = newRecords
     .filter((rec_) => rec_)
     .map((rec) => {
-      return pluginManager.download(rec!.value);
+      const payload = getTextPayload(rec!.value);
+      pluginManager.download(payload);
+      return payload.content;
     });
   const decrypted = await Promise.all(decryptPromises);
 
@@ -28,7 +32,6 @@ export const syncDownload = async (
   //     preferences: gqlDevice.preferences
   //   }
   // }
-
 
   // TODO: use query builder to insert multiple records, check login command
   // const createRecordPromise = newRecords

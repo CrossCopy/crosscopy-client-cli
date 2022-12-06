@@ -1,9 +1,11 @@
 import {Command, Flags} from '@oclif/core';
-import {CryptoService, db} from '@crosscopy/core';
+import {CryptoService, db, plugin} from '@crosscopy/core';
 import * as inquirer from 'inquirer';
 import {requests as req} from '@crosscopy/graphql-schema';
 import cloneDeep from 'lodash/cloneDeep';
 import {generatePluginManager} from '../util/plugin';
+
+const {getTextPayload} = plugin;
 
 /**
  * Sample Command
@@ -26,6 +28,8 @@ export default class Login extends Command {
   static flags = {
     email: Flags.string({char: 'e', description: 'Email'}),
     password: Flags.string({char: 'p', description: 'Password'}),
+    profile: Flags.string({description: 'Profile Name'}),
+    device: Flags.string({description: 'Device Name'}),
   };
 
   public async run(): Promise<void> {
@@ -34,7 +38,6 @@ export default class Login extends Command {
     const sdk = getSdk(gqlClient);
     const {flags} = await this.parse(Login);
     const prompts: {name: string; message: string; type: string}[] = [];
-
     if (!flags.email) {
       prompts.push({name: 'email', message: 'Enter your Email', type: 'input'});
     }
@@ -124,9 +127,9 @@ export default class Login extends Command {
         );
 
         // TODO: consider extract multi-record decryption as a helper
-        const decryptRecords = await Promise.all(
-          records.map((rec) => pluginManager.download(rec.value || '')),
-        );
+        const payloads = records.map(rec => getTextPayload(rec.value!));
+        pluginManager.downloadMany(payloads);
+        const decryptRecords = payloads.map(payload => payload.content);
         for (const [i, rec] of records.entries()) {
           rec.value = decryptRecords.at(i);
         }
@@ -137,6 +140,65 @@ export default class Login extends Command {
           .execute();
 
         this.log(`Login As ${this.auth.user.username}`);
+
+        // let user choose profile and device
+        const questions = [];
+        const selected: {
+          profileName: string | undefined;
+          deviceName: string | undefined;
+        } = {profileName: undefined, deviceName: undefined};
+        const devicesCandidates = await dbService.devices();
+        const profilesCandidates = await dbService.profiles();
+
+        if (flags.device) {
+          selected.deviceName = flags.device;
+        } else {
+          questions.push({
+            type: 'list',
+            name: 'device',
+            message: 'Which device is this?',
+            choices: devicesCandidates.map((d) => d.deviceName),
+          });
+        }
+
+        if (flags.profile) {
+          selected.profileName = flags.profile;
+        } else {
+          questions.push({
+            type: 'list',
+            name: 'profile',
+            message: 'Which profile is this?',
+            choices: profilesCandidates.map((p) => p.profileName),
+          });
+        }
+
+        if (questions.length > 0) {
+          const answers = await inquirer.prompt(questions);
+          if (!selected.deviceName) selected.deviceName = answers.device;
+          if (!selected.profileName) selected.profileName = answers.profile;
+        }
+
+        const selectedDevice = await dbService.deviceByName(
+          selected.deviceName!,
+        );
+        this.setting.deviceId = selectedDevice.id;
+
+        const selectedProfile = await dbService.profileByName(
+          selected.profileName!,
+        );
+        this.setting.profileId = selectedProfile.id;
+
+        // Verify and Log
+        this.log(
+          `Selected Device: ${(await dbService.deviceById(
+            this.setting.deviceId,
+          )).deviceName}`,
+        );
+        this.log(
+          `Selected Profile: ${(await dbService.profileById(
+            this.setting.profileId,
+          )).profileName}`,
+        );
       })
       .catch((error) => {
         this.error(error.message);
