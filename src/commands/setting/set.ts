@@ -2,7 +2,7 @@ import {Command, Flags} from '@oclif/core';
 import {SettingConfig} from '../../config';
 import {Mode} from '../../config/setting';
 import os from 'node:os';
-import {db} from '@crosscopy/core';
+import {DBService} from '@crosscopy/core/database';
 
 export default class Setting extends Command {
   setting = new SettingConfig(this.config.configDir);
@@ -44,7 +44,7 @@ export default class Setting extends Command {
 
     if (flags.device !== undefined) {
       // if in online mode, need to rename device or create new device
-      const dbService = db.DBService.instance;
+      const dbService = DBService.instance;
       if (!this.setting.dbPath) throw new Error('DB Path not defined');
       await dbService.init(this.setting.dbPath);
       this.setting.deviceId = (await dbService.deviceByName(flags.device)).id;

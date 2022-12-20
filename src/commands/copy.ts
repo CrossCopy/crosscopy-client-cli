@@ -1,16 +1,16 @@
-import {Command} from '@oclif/core';
+import {Command, Flags} from '@oclif/core';
 import {generatePluginManager} from '../util/plugin';
 import {readStdin} from '../util/stdin';
 import {SettingConfig, AuthConfig} from '../config';
-import {db} from '@crosscopy/core';
+import {db, plugin} from '@crosscopy/core';
 import {v4 as uuidv4} from 'uuid';
 import {requests as req} from '@crosscopy/graphql-schema';
 import {generateSDK} from '../util/graphql';
 import fs from 'node:fs';
-import chalk from 'chalk';
-import {plugin} from '@crosscopy/core';
+import {stdoutLogger} from '../util/logger';
+import {upload} from '../util/sync';
+import {Mode} from '../config/setting';
 
-const {getTextPayload} = plugin;
 const maxDisplayContentLength = 200;
 
 /**
@@ -28,79 +28,80 @@ export default class Copy extends Command {
     '<%= config.bin %> <%= command.id %> <filename.txt>',
   ];
 
-  static flags = {};
+  static flags = {
+    image: Flags.boolean({
+      description:
+        'Image File, without this flag, files will be interpreted as UTF8 Text File',
+      default: false,
+    }),
+  };
 
   static args = [{name: 'file'}];
 
   public async run(): Promise<void> {
     this.log('Enter content you want to copy, press Ctrl+D to finish');
-    const {args} = await this.parse(Copy);
+    const {args, flags} = await this.parse(Copy);
+    let contentType: req.RecordType = req.RecordType.Text;
     let contentToUpload: string;
     if (args.file) {
-      this.log(chalk.cyan('Input File:'), chalk.green(`${args.file}`));
-      const fileContent = fs.readFileSync(args.file, {
-        encoding: 'utf8',
-        flag: 'r',
-      });
-
-      contentToUpload = fileContent;
+      stdoutLogger.info(`Input File: ${args.file}`);
+      contentType = flags.image ? req.RecordType.Image : req.RecordType.Text;
+      contentToUpload = flags.image
+        ? fs.readFileSync(args.file).toString('base64')
+        : fs.readFileSync(args.file, {
+            encoding: 'utf8',
+            flag: 'r',
+          });
     } else {
       contentToUpload = await readStdin();
-      console.log(`stdin content:\n${contentToUpload}`);
     }
-
-    this.log(chalk.cyan('\nContent to Upload:\n'));
-    this.log(
-      chalk.green(
-        `${contentToUpload.slice(0, maxDisplayContentLength)}${
-          contentToUpload.length > maxDisplayContentLength ? '...' : ''
-        }\n\n`,
-      ),
-    );
 
     // create record
     const dbService = db.DBService.instance;
     await dbService.init(this.setting.dbPath);
+
+    // TODO: Move the following
     const newRecUUID = uuidv4();
-    const createRec = dbService.createRec({
+    const recToCreate = {
       id: undefined,
       uuid: newRecUUID,
-      // createdAt: new Date(),
       device: await this.setting.device,
       profile: await this.setting.profile,
-      // type: req.RecordType.Text,
+      type: contentType,
       value: contentToUpload,
-      // expired: false,
-      // deleted: false,
-    });
+    };
+    await dbService.createRec(recToCreate);
+
     // save to local sqlite db
-    await createRec;
     // check mode
     // if mode is online, upload record (using plugin manager)
-    if (this.setting.mode === 'online') {
+    if (this.setting.mode === Mode.online) {
       if (!this.auth.passwordHash)
         throw new Error('No Decryption Key Found, Please Login');
       const pluginManager = await generatePluginManager(this.auth.passwordHash);
-      const payload = getTextPayload(contentToUpload);
-      pluginManager.upload(payload);
-      const dataToUpload = payload.content;
+      // const payload = getTextPayload(contentToUpload);
+      // pluginManager.upload(payload);
+      // const dataToUpload = payload.content;
+      // console.log('dataToUpload', dataToUpload);
+
       const sdk = generateSDK(
         this.setting.graphqlUrl,
         this.auth.BearerAccessToken,
       );
-      this.log(`Content Length: ${dataToUpload.length}`);
+      const addedRecord = await upload(recToCreate, pluginManager, sdk);
+      // this.log(`Content Length: ${dataToUpload.length}`);
 
-      // get response, update local copy with remote version
-      console.log(dataToUpload);
+      // // get response, update local copy with remote version
 
-      const addedRecord = await sdk.addRecord({
-        type: req.RecordType.Text,
-        value: dataToUpload,
-        deviceId: this.setting.deviceId,
-        profileId: this.setting.profileId,
-      });
-      if (addedRecord.addRecord?.id) {
-        await dbService.setDbId(newRecUUID, addedRecord.addRecord?.id);
+      // const addedRecord = await sdk.addRecord({
+      //   type: req.RecordType.Text,
+      //   value: dataToUpload,
+      //   deviceId: this.setting.deviceId,
+      //   profileId: this.setting.profileId,
+      // });
+      if (addedRecord.id) {
+        await dbService.setDbId(newRecUUID, addedRecord.id);
+        await dbService.setInsync(newRecUUID, 1);
       } else {
         throw new Error('Failed to add record');
       }

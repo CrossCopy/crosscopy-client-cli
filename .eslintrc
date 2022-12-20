@@ -4,13 +4,15 @@
     "semi": ["error", "always"],
     // "new-cap": ["error", "off"],
     "no-warning-comments": ["off"],
-    "indent": [
-      2,
-      2,
-      {
-        "SwitchCase": 1
-      }
-    ],
+    "indent": "off",
+    "operator-linebreak": "off",
+    // "indent": [
+    //   2,
+    //   2,
+    //   {
+    //     "SwitchCase": 1
+    //   }
+    // ],
     "arrow-parens": "off",
     "node/no-extraneous-import": [
       "error",

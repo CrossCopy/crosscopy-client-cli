@@ -25,7 +25,7 @@ export default abstract class Index {
   get sdk() {
     const gqlClient = new GraphQLClient(this.setting.graphqlUrl, {
       headers: {
-        Authorization: `Bearer ${this.auth._config.accessToken}`,
+        Authorization: `Bearer ${this.auth.config.accessToken}`,
       },
     });
     return getSdk(gqlClient);

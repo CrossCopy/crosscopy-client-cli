@@ -6,7 +6,7 @@ export default abstract class Config<T> {
   configDir: string;
   filename: string;
   configFilePath: string;
-  _config: T;
+  protected _config: T;
 
   constructor(configDir: string, filename: string, initConfig: T) {
     this.configDir = configDir;
@@ -32,10 +32,15 @@ export default abstract class Config<T> {
   }
 
   save(): void {
-    fs.writeFileSync(this.configFilePath, JSON.stringify(this._config, null, 2));
+    fs.writeFileSync(
+      this.configFilePath,
+      JSON.stringify(this._config, null, 2),
+    );
   }
 
   vis(): void {
     console.log(JSON.stringify(this._config, null, 2));
   }
+
+  // abstract get config(): T;
 }

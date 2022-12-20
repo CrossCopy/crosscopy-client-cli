@@ -1,7 +1,12 @@
-import {db} from '@crosscopy/core';
+import * as db from '@crosscopy/core/database';
 import Config from './config';
+import _ from 'lodash';
 
-export type Mode = 'offline' | 'online';
+// export type Mode = 'offline' | 'online';
+export enum Mode {
+  offline = 'offline',
+  online = 'online',
+}
 
 export type Setting = {
   plugins: [];
@@ -16,7 +21,7 @@ export const settingInitConfig: Setting = {
   plugins: [],
   server: 'https://api.crosscopy.io',
   dbPath: '',
-  mode: 'online',
+  mode: Mode.online,
   // deviceName: `${os.hostname()}-cli`,
   // profileName: 'Default',
   deviceId: 0,
@@ -90,5 +95,19 @@ export default class SettingConfig extends Config<Setting> {
 
   get graphqlUrl(): string {
     return `${this._config.server}/graphql`;
+  }
+
+  get subscriptionUrl(): string {
+    return `ws://${this._config.server.split('//')[1]}/graphql`;
+  }
+
+  /**
+   * @returns Detailed settings
+   */
+  async config(): Promise<Setting> {
+    return _.merge(this._config, {
+      device: await this.device,
+      profile: await this.profile,
+    });
   }
 }

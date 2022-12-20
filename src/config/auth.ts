@@ -1,3 +1,4 @@
+import {AccessToken, parseJWTToken} from '../util/auth';
 import Config from './config';
 import {requests as req} from '@crosscopy/graphql-schema';
 
@@ -5,6 +6,7 @@ export type Auth = {
   passwordHash: string | null;
   accessToken: string | null;
   refreshToken: string | null;
+  sessionId: string | null;
   user: req.User | null;
 };
 
@@ -13,6 +15,7 @@ export const authInitConfig: Auth = {
   accessToken: null,
   refreshToken: null,
   user: null,
+  sessionId: null,
 };
 
 export default class AuthConfig extends Config<Auth> {
@@ -32,6 +35,10 @@ export default class AuthConfig extends Config<Auth> {
   set accessToken(value: string | null) {
     this._config.accessToken = value;
     this.save();
+  }
+
+  get parsedAccessToken(): null | AccessToken {
+    return this.accessToken ? parseJWTToken(this.accessToken) : null;
   }
 
   get BearerAccessToken(): string {
@@ -62,5 +69,9 @@ export default class AuthConfig extends Config<Auth> {
 
   constructor(configDir: string) {
     super(configDir, 'auth.json', authInitConfig);
+  }
+
+  get config() {
+    return this._config;
   }
 }

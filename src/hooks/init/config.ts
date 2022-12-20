@@ -2,10 +2,11 @@ import {Hook} from '@oclif/core';
 import fs from 'node:fs';
 import path from 'node:path';
 // import readline from 'node:readline';
-import AuthConfig from '../../../src/config/auth';
-import SettingConfig from '../../../src/config/setting';
+import AuthConfig from '../../config/auth';
+import SettingConfig from '../../config/setting';
 import {db} from '@crosscopy/core';
 import debug from 'debug';
+import {stderrLogger} from '../../util/logger';
 
 debug.enable('crosscopy:*');
 // const rl = readline.createInterface({
@@ -15,7 +16,8 @@ debug.enable('crosscopy:*');
 // });
 
 const hook: Hook<'init'> = async function (_options) {
-  this.log('config init hook');
+  // stderrLogger.info('config init hook');
+
   // console.log(`example init hook running before ${options.id}`);
   // console.log(this.config.configDir);
   // console.log(this.config.dataDir);
@@ -41,8 +43,8 @@ const hook: Hook<'init'> = async function (_options) {
   const auth = new AuthConfig(this.config.configDir);
   // this.log(`auth config file: ${auth.configFilePath}`);
   const dbPath = path.join(this.config.dataDir, 'db.sqlite');
-  if (!setting._config.dbPath) {
-    setting._config.dbPath = dbPath;
+  if (!setting.dbPath) {
+    setting.dbPath = dbPath;
     setting.save();
   }
 

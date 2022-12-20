@@ -1,14 +1,18 @@
+// Reference: https://www.npmjs.com/package/graphql-ws
 import {Command} from '@oclif/core';
-import {requests, requests as req} from '@crosscopy/graphql-schema';
+import {RecordType, requests as req} from '@crosscopy/graphql-schema';
 import {AuthConfig, SettingConfig} from '../config';
-import {SocketIOService} from '@crosscopy/core';
-import {db} from '@crosscopy/core';
-import getCbListener from '../util/clipboard-monitor';
 import {v4 as uuidv4} from 'uuid';
 import {generatePluginManager} from '../util/plugin';
-import {IsNull} from 'typeorm';
-import {syncDownload} from '../util/sync';
-import cb from 'clipboardy';
+import clipboard from '@crosscopy/clipboard';
+import {createClient} from 'graphql-ws';
+import WebSocket from 'ws';
+import {getImagePayload, getTextPayload, Payload} from '@crosscopy/core/plugin';
+import {DBService} from '@crosscopy/core/database';
+import {stderrLogger, stdoutLogger} from '../util/logger';
+import {generateSDK} from '../util/graphql';
+import {upload} from '../util/sync';
+import fs from 'node:fs';
 
 export default class Listen extends Command {
   static description = 'Realtime Syncing';
@@ -32,86 +36,161 @@ export default class Listen extends Command {
   }
 
   public async run(): Promise<void> {
-    // if (!this.auth.accessToken) return this.error('Not Authenticated');
-    // const dbService = db.DBService.instance;
-    // await dbService.init(this.setting.dbPath);
-    // const socketioUrl = this.setting.socketioUrl;
-    // if (!this.auth.passwordHash)
-    //   throw new Error('No Decryption Key Found, Please Login Again');
-    // const pluginManager = await generatePluginManager(this.auth.passwordHash);// const pluginManager = await generatePluginManager(this.auth.passwordHash);
-    // this.log(`connecting to ${socketioUrl}`);
-    // const allUUIDs = (
-    //   await dbService.RecRepo.find({
-    //     select: ['uuid'],
-    //   })
-    // ).map((rec) => rec.uuid);
-    // const clientSideOnlyRecords = await dbService.RecRepo.find({
-    //   // eslint-disable-next-line new-cap
-    //   where: {id: IsNull()},
-    // });
+    // listen mode has to be online, have to have logged in with a password hash
+    if (!this.auth.passwordHash) {
+      throw new Error('No Decryption Key Found, Please Login');
+    }
 
-    // const clientSideOnlyRecords2 = clientSideOnlyRecords.map((rec) => ({
-    //   uuid: rec.uuid,
-    //   createdAt: rec.createdAt,
-    //   device: rec.device,
-    //   profile: rec.profile,
-    //   type: rec.type,
-    //   userId: rec.userId,
-    //   value: rec.value,
-    // })) as req.TextRecInput[];
+    const parsedAccessToken = this.auth.parsedAccessToken;
 
-    // SocketIOService.instance
-    //   .init(this.setting.socketioUrl, '/crosscopy/ws/', this.auth.accessToken)
-    //   .connect(allUUIDs, clientSideOnlyRecords2)
-    //   .on('init', async (syncResponse: requests.SyncResponse) => {
-    //     // this.log('init');
-    //     // console.log(records);
-    //     // console.log(latestInUserIds);
-    //     console.log(syncResponse);
-    //     const {idMapping, newRecords} = syncResponse;
-    //     console.log(idMapping);
-    //     console.log(newRecords);
-    //     if (idMapping === undefined || newRecords === undefined) {
-    //       this.log('Sync Error on Server Side, Probably Duplicate Key');
-    //       // exit(1);
-    //     } else {
-    //       await syncDownload(
-    //         idMapping,
-    //         newRecords as requests.Rec[],
-    //         pluginManager,
-    //         dbService,
-    //       );
-    //     }
-    //   })
-    //   .on('notification', this.onNotification)
-    //   .on('deleted', this.onDelete)
-    //   .on('uploaded', async (record: req.Rec) => {
-    //     record.value = await pluginManager.download(record.value);
-    //     const newRecord = await db.DBService.instance.RecRepo.save(record);
-    //     cb.writeSync(newRecord.value);
-    //     console.log('onUpload');
-    //     console.log(newRecord);
-    //   })
-    //   .on('updated', this.onUpdate);
+    if (!parsedAccessToken || !parsedAccessToken.sessionId) {
+      throw new Error('No Session ID Avaialble, Please Login In Again');
+    }
 
-    // const cbListener = getCbListener();
-    // // this.log('Start Clipboard Listener');
-    // cbListener.listen(
-    //   dbService,
-    //   async (content) => {
-    //     const uuid = uuidv4();
-    //     const record = await dbService.createRec({
-    //       value: content,
-    //       uuid: uuid,
-    //     });
-    //     console.log('clipboard content updated');
-    //     record.value = await pluginManager.upload(record.value);
-    //     SocketIOService.instance.socket?.emit(
-    //       'upload',
-    //       record as req.TextRecInput,
-    //     );
-    //   },
-    //   500,
-    // );
+    const dbService = DBService.instance;
+    await dbService.init(this.setting.dbPath);
+    const pluginManager = await generatePluginManager(this.auth.passwordHash);
+    // const payload = getTextPayload(contentToUpload);
+    // pluginManager.upload(payload);
+    // const dataToUpload = payload.content;
+    // console.log('dataToUpload', dataToUpload);
+
+    const sdk = generateSDK(
+      this.setting.graphqlUrl,
+      this.auth.BearerAccessToken,
+    );
+
+    const device = await this.setting.device;
+    const profile = await this.setting.profile;
+
+    clipboard.on('text', async (data) => {
+      // TODO: consider extract a helper sync function in sync command and pass data in
+      stdoutLogger.info('text updated');
+      const lastRec = await dbService.selectLastRecord();
+      if (!lastRec || lastRec.value !== data) {
+        const recToCreate = {
+          id: undefined,
+          uuid: uuidv4(),
+          device: device,
+          profile: profile,
+          type: RecordType.Text,
+          value: data,
+        };
+        upload(recToCreate, pluginManager, sdk);
+      }
+    });
+    clipboard.on('image', async (data) => {
+      const lastRec = await dbService.selectLastRecord();
+      const base64Img = data.toString('base64');
+      if (!lastRec || lastRec.value !== base64Img) {
+        // TODO: upload image to cloud
+        stdoutLogger.info('Clipboard Image Updated, upload');
+        // expect data image buffer, encode it to base64 and upload
+        // fs.writeFileSync('test.png', data);
+        const recToCreate = {
+          id: undefined,
+          uuid: uuidv4(),
+          device: device,
+          profile: profile,
+          type: RecordType.Image,
+          value: base64Img, // Buffer is pure image buffer, encode to base64 and transfer
+        };
+        fs.writeFileSync('image-base64.txt', base64Img);
+        upload(recToCreate, pluginManager, sdk);
+      }
+    });
+    clipboard.listen();
+    stdoutLogger.info('Starting Listening for Clipboard Updates');
+    const accessToken = this.auth.accessToken;
+    if (!accessToken) throw new Error('No Access Token');
+    // Reference: https://www.npmjs.com/package/graphql-ws
+    const client = createClient({
+      url: this.setting.subscriptionUrl,
+      webSocketImpl: WebSocket,
+      generateID: () => uuidv4(),
+      connectionParams: {authToken: this.auth.accessToken},
+    });
+    if (!this.auth.passwordHash)
+      throw new Error('No Decryption Key Found, Please Login');
+
+    const onNext = async (rec_: any) => {
+      const data = rec_ as {data: {recordSync: req.SyncSubResponse}};
+      const rec = data.data.recordSync;
+      let payload: Payload;
+      if (rec.type === req.RecordType.Text) {
+        payload = getTextPayload(rec.value);
+      } else if (rec.type === req.RecordType.Image) {
+        payload = getImagePayload(rec.value);
+      } else {
+        stderrLogger.error(`Data Type: ${rec.type} is not supported`);
+        return;
+      }
+
+      pluginManager.download(payload);
+      const lastRec = await dbService.selectLastRecord();
+      if (
+        lastRec &&
+        lastRec.type === payload.type &&
+        lastRec.value.length === payload.content.length &&
+        lastRec.value === payload.content
+      ) {
+        stdoutLogger.info("Same Clipboard Content, won't write again");
+        return;
+      }
+
+      await dbService.createRec({
+        id: rec.id as number,
+        uuid: rec.uuid,
+        createdAt: rec.createdAt as string,
+        device: await dbService.deviceById(rec.deviceId),
+        profile: await dbService.profileById(rec.profileId),
+        type: rec.type as unknown as req.RecordType,
+        value: payload.content,
+        expired: rec.expired,
+        deleted: rec.deleted,
+        insync: 1,
+      });
+      // eslint-disable-next-line unicorn/consistent-destructuring
+      if (rec.type === req.RecordType.Text) {
+        stdoutLogger.debug('Writing Text to Clipboard');
+        clipboard.writeTextSync(payload.content);
+      } else if (rec.type === req.RecordType.Image) {
+        stdoutLogger.debug('Writing Image to Clipboard');
+        clipboard.writeImageSync(payload.content);
+      }
+    };
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars, unicorn/consistent-function-scoping
+    let unsubscribe = () => {
+      console.log(`Unsubscribe from ${this.setting.subscriptionUrl}`);
+    };
+
+    const syncPromise: Promise<void> = new Promise((resolve, reject) => {
+      unsubscribe = client.subscribe(
+        {
+          query: `
+          subscription recordSync {
+            recordSync {
+              uuid
+              deviceId
+              profileId
+              id
+              type
+              value
+              userId
+              createdAt
+              deleted
+              expired
+            }
+          }`,
+        },
+        {
+          next: onNext,
+          error: reject,
+          complete: resolve,
+        },
+      );
+    });
+    await syncPromise;
   }
 }

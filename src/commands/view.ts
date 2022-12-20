@@ -1,5 +1,5 @@
 import {Command, Flags} from '@oclif/core';
-import {db} from '@crosscopy/core';
+import {DBService} from '@crosscopy/core/database';
 import {SettingConfig} from '../config';
 
 export default class View extends Command {
@@ -24,7 +24,7 @@ export default class View extends Command {
 
   public async run(): Promise<void> {
     const {flags} = await this.parse(View);
-    const dbService = db.DBService.instance;
+    const dbService = DBService.instance;
     if (!this.setting.dbPath) throw new Error('DB Path not defined');
     await dbService.init(this.setting.dbPath);
 
@@ -62,4 +62,3 @@ export default class View extends Command {
     console.table(displayRecords);
   }
 }
-

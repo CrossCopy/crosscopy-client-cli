@@ -1,14 +1,24 @@
-import {plugin} from '@crosscopy/core';
-
-const {PluginManager, corePlugins} = plugin;
+// import {plugin} from '@crosscopy/core';
+import {
+  PluginManager,
+  CorePlugin,
+  ExternalPlugin,
+  EncryptionPlugin,
+} from '@crosscopy/core/plugin';
+// const {PluginManager, corePlugins} = plugin;
 
 // TODO: make this plugin manager generator a singleton class
-export const generatePluginManager = async (passwordHash: string): Promise<plugin.PluginManager> => {
-  const encryptionPlugin = new corePlugins.EncryptionPlugin({passwordHash});
+export const generatePluginManager = async (
+  passwordHash: string,
+): Promise<PluginManager> => {
+  const encryptionPlugin = new EncryptionPlugin('main-encryption-plugin', {
+    passwordHash,
+  });
   // const notionPlugin = new externalPlugins.NotionPlugin();
-  const headPlugins: plugin.CorePlugin[] = [];
-  const tailPlugins: plugin.CorePlugin[] = [encryptionPlugin];
-  const _externalPlugins: plugin.ExternalPlugin[] = [];
+  const headPlugins: CorePlugin[] = [];
+  // const tailPlugins: CorePlugin[] = [encryptionPlugin];
+  const tailPlugins: CorePlugin[] = [];
+  const _externalPlugins: ExternalPlugin[] = [];
   // const _externalPlugins: plugin.ExternalPlugin[] = [notionPlugin];
   const manager = new PluginManager(headPlugins, tailPlugins, _externalPlugins);
   // TODO: Try catch

@@ -1,13 +1,14 @@
 import {Hook} from '@oclif/core';
 import {util} from '@crosscopy/core';
-import {AuthConfig} from '../../../src/config';
+import {AuthConfig} from '../../config';
 import {GraphQLClient} from 'graphql-request';
-import {SettingConfig} from '../../../src/config';
+import {SettingConfig} from '../../config';
 import {requests} from '@crosscopy/graphql-schema';
+import {stderrLogger, stdoutLogger} from '../../util/logger';
 
 const hook: Hook<'init'> = async function (_options) {
   // check access token and refresh token expiry time and refresh if needed
-  console.log(
+  stdoutLogger.info(
     'Checking access token and refresh token expiry time and refresh if needed',
   );
   const auth = new AuthConfig(this.config.configDir);
@@ -16,8 +17,9 @@ const hook: Hook<'init'> = async function (_options) {
   const {getSdk} = requests;
   const sdk = getSdk(gqlClient);
   if (!auth.accessToken || !auth.refreshToken) {
-    console.error("You don't have an access token or refresh token");
-    throw new Error("Access or Refresh Token Doesn't Exist, Please Login");
+    stderrLogger.error("You don't have an access token or refresh token");
+    stderrLogger.error("Access or Refresh Token Doesn't Exist, Please Login");
+    return;
   }
 
   const accessTokenExpired = util.jwt.jwtExpired(auth.accessToken);
@@ -26,12 +28,12 @@ const hook: Hook<'init'> = async function (_options) {
   if (accessTokenExpired) {
     if (refreshTokenExpired) {
       // both tokens expired, logout
-      this.log('Authentication expired, please login again');
+      stderrLogger.warn('Authentication expired, please login again');
       auth.accessToken = null;
       auth.refreshToken = null;
     } else {
       // refresh token is valid, refresh access token
-      this.log('Refreshing access token');
+      stderrLogger.info('Refreshing access token');
       try {
         const res = await sdk.refreshAccessToken({
           refreshToken: auth.refreshToken,
@@ -40,7 +42,7 @@ const hook: Hook<'init'> = async function (_options) {
           auth.accessToken = res.refreshAccessToken.accessToken;
         }
       } catch (error: unknown) {
-        this.warn("Couldn't refresh access token, please login again");
+        stderrLogger.warn("Couldn't refresh access token, please login again");
         this.error(error as Error);
       }
     }
