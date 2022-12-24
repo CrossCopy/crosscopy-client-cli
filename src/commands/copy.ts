@@ -2,7 +2,7 @@ import {Command, Flags} from '@oclif/core';
 import {generatePluginManager} from '../util/plugin';
 import {readStdin} from '../util/stdin';
 import {SettingConfig, AuthConfig} from '../config';
-import {db, plugin} from '@crosscopy/core';
+import {DBService} from '@crosscopy/core/database';
 import {v4 as uuidv4} from 'uuid';
 import {requests as req} from '@crosscopy/graphql-schema';
 import {generateSDK} from '../util/graphql';
@@ -10,8 +10,6 @@ import fs from 'node:fs';
 import {stdoutLogger} from '../util/logger';
 import {upload} from '../util/sync';
 import {Mode} from '../config/setting';
-
-const maxDisplayContentLength = 200;
 
 /**
  * TODO: test coping a very long string that prisma can't handle, see what error is returned.
@@ -57,7 +55,7 @@ export default class Copy extends Command {
     }
 
     // create record
-    const dbService = db.DBService.instance;
+    const dbService = DBService.instance;
     await dbService.init(this.setting.dbPath);
 
     // TODO: Move the following
@@ -79,26 +77,12 @@ export default class Copy extends Command {
       if (!this.auth.passwordHash)
         throw new Error('No Decryption Key Found, Please Login');
       const pluginManager = await generatePluginManager(this.auth.passwordHash);
-      // const payload = getTextPayload(contentToUpload);
-      // pluginManager.upload(payload);
-      // const dataToUpload = payload.content;
-      // console.log('dataToUpload', dataToUpload);
 
       const sdk = generateSDK(
         this.setting.graphqlUrl,
         this.auth.BearerAccessToken,
       );
       const addedRecord = await upload(recToCreate, pluginManager, sdk);
-      // this.log(`Content Length: ${dataToUpload.length}`);
-
-      // // get response, update local copy with remote version
-
-      // const addedRecord = await sdk.addRecord({
-      //   type: req.RecordType.Text,
-      //   value: dataToUpload,
-      //   deviceId: this.setting.deviceId,
-      //   profileId: this.setting.profileId,
-      // });
       if (addedRecord.id) {
         await dbService.setDbId(newRecUUID, addedRecord.id);
         await dbService.setInsync(newRecUUID, 1);

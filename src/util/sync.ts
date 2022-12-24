@@ -65,7 +65,7 @@ export const syncDownload = async (
   await Promise.all(updateNewRecordsPromise);
 
   stdoutLogger.log(
-    `Uploadeded ${idMapping.length} Records, Database ID Assigned`,
+    `Uploadeded ${idMapping.length} Record(s), Database ID Assigned`,
   );
 
   // handle deleted records

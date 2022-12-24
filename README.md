@@ -16,11 +16,11 @@ oclif example Hello World CLI
 # Usage
 <!-- usage -->
 ```sh-session
-$ npm install -g crosscopy
+$ npm install -g @crosscopy/xc
 $ xc COMMAND
 running command...
 $ xc (--version)
-crosscopy/0.0.0 darwin-arm64 node-v16.14.2
+@crosscopy/xc/0.0.0 darwin-arm64 node-v18.12.0
 $ xc --help [COMMAND]
 USAGE
   $ xc COMMAND
@@ -29,9 +29,10 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`xc . PERSON`](#xc--person)
 * [`xc autocomplete [SHELL]`](#xc-autocomplete-shell)
 * [`xc clear`](#xc-clear)
+* [`xc copy [FILE]`](#xc-copy-file)
+* [`xc default`](#xc-default)
 * [`xc delete [FILE]`](#xc-delete-file)
 * [`xc help [COMMAND]`](#xc-help-command)
 * [`xc listen`](#xc-listen)
@@ -45,37 +46,17 @@ USAGE
 * [`xc plugins:uninstall PLUGIN...`](#xc-pluginsuninstall-plugin-1)
 * [`xc plugins:uninstall PLUGIN...`](#xc-pluginsuninstall-plugin-2)
 * [`xc plugins update`](#xc-plugins-update)
+* [`xc profile add [FILE]`](#xc-profile-add-file)
+* [`xc profile delete [FILE]`](#xc-profile-delete-file)
+* [`xc profile ls [FILE]`](#xc-profile-ls-file)
+* [`xc profile rename [FILE]`](#xc-profile-rename-file)
 * [`xc register`](#xc-register)
 * [`xc setting`](#xc-setting)
 * [`xc setting set`](#xc-setting-set)
-* [`xc sync`](#xc-sync)
+* [`xc sync [LISTEN]`](#xc-sync-listen)
 * [`xc update [CHANNEL]`](#xc-update-channel)
 * [`xc upload`](#xc-upload)
 * [`xc view`](#xc-view)
-
-## `xc . PERSON`
-
-Say hello
-
-```
-USAGE
-  $ xc . [PERSON] -f <value>
-
-ARGUMENTS
-  PERSON  Person to say hello to
-
-FLAGS
-  -f, --from=<value>  (required) Whom is saying hello
-
-DESCRIPTION
-  Say hello
-
-EXAMPLES
-  $ oex hello friend --from oclif
-  hello friend from oclif! (./src/commands/hello/index.ts)
-```
-
-_See code: [dist/commands/index.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.0/dist/commands/index.ts)_
 
 ## `xc autocomplete [SHELL]`
 
@@ -104,7 +85,7 @@ EXAMPLES
   $ xc autocomplete --refresh-cache
 ```
 
-_See code: [@oclif/plugin-autocomplete](https://github.com/oclif/plugin-autocomplete/blob/v1.3.0/src/commands/autocomplete/index.ts)_
+_See code: [@oclif/plugin-autocomplete](https://github.com/oclif/plugin-autocomplete/blob/v1.3.6/src/commands/autocomplete/index.ts)_
 
 ## `xc clear`
 
@@ -135,6 +116,44 @@ EXAMPLES
 ```
 
 _See code: [dist/commands/clear.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.0/dist/commands/clear.ts)_
+
+## `xc copy [FILE]`
+
+Copy content piped to stdin
+
+```
+USAGE
+  $ xc copy [FILE] [--image]
+
+FLAGS
+  --image  Image File, without this flag, files will be interpreted as UTF8 Text File
+
+DESCRIPTION
+  Copy content piped to stdin
+
+EXAMPLES
+  echo content | xc copy
+
+  $ xc copy
+
+  $ xc copy <filename.txt>
+```
+
+_See code: [dist/commands/copy.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.0/dist/commands/copy.ts)_
+
+## `xc default`
+
+Root Command
+
+```
+USAGE
+  $ xc default
+
+DESCRIPTION
+  Root Command
+```
+
+_See code: [dist/commands/default.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.0/dist/commands/default.ts)_
 
 ## `xc delete [FILE]`
 
@@ -189,7 +208,7 @@ DESCRIPTION
   Display help for xc.
 ```
 
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v5.1.10/src/commands/help.ts)_
+_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v5.1.19/src/commands/help.ts)_
 
 ## `xc listen`
 
@@ -214,11 +233,13 @@ Login to CrossCopy Cloud
 
 ```
 USAGE
-  $ xc login [-e <value>] [-p <value>]
+  $ xc login [-e <value>] [-p <value>] [--profile <value>] [--device <value>]
 
 FLAGS
   -e, --email=<value>     Email
   -p, --password=<value>  Password
+  --device=<value>        Device Name
+  --profile=<value>       Profile Name
 
 DESCRIPTION
   Login to CrossCopy Cloud
@@ -249,7 +270,7 @@ EXAMPLES
   $ xc plugins
 ```
 
-_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v2.0.11/src/commands/plugins/index.ts)_
+_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v2.1.7/src/commands/plugins/index.ts)_
 
 ## `xc plugins:install PLUGIN...`
 
@@ -269,7 +290,6 @@ FLAGS
 
 DESCRIPTION
   Installs a plugin into the CLI.
-
   Can be installed from npm or a git url.
 
   Installation of a user-installed plugin will override a core plugin.
@@ -277,6 +297,7 @@ DESCRIPTION
   e.g. If you have a core plugin that has a 'hello' command, installing a user-installed plugin with a 'hello' command
   will override the core plugin implementation. This is useful if a user needs to update core plugin functionality in
   the CLI without the need to patch and update the whole CLI.
+
 
 ALIASES
   $ xc plugins add
@@ -329,7 +350,6 @@ FLAGS
 
 DESCRIPTION
   Installs a plugin into the CLI.
-
   Can be installed from npm or a git url.
 
   Installation of a user-installed plugin will override a core plugin.
@@ -337,6 +357,7 @@ DESCRIPTION
   e.g. If you have a core plugin that has a 'hello' command, installing a user-installed plugin with a 'hello' command
   will override the core plugin implementation. This is useful if a user needs to update core plugin functionality in
   the CLI without the need to patch and update the whole CLI.
+
 
 ALIASES
   $ xc plugins add
@@ -366,11 +387,11 @@ FLAGS
 
 DESCRIPTION
   Links a plugin into the CLI for development.
-
   Installation of a linked plugin will override a user-installed or core plugin.
 
   e.g. If you have a user-installed or core plugin that has a 'hello' command, installing a linked plugin with a 'hello'
   command will override the user-installed or core plugin implementation. This is useful for development work.
+
 
 EXAMPLES
   $ xc plugins:link myplugin
@@ -461,6 +482,82 @@ DESCRIPTION
   Update installed plugins.
 ```
 
+## `xc profile add [FILE]`
+
+describe the command here
+
+```
+USAGE
+  $ xc profile add [FILE] [-n <value>] [-f]
+
+FLAGS
+  -f, --force
+  -n, --name=<value>  name to print
+
+DESCRIPTION
+  describe the command here
+
+EXAMPLES
+  $ xc profile add
+```
+
+## `xc profile delete [FILE]`
+
+describe the command here
+
+```
+USAGE
+  $ xc profile delete [FILE] [-n <value>] [-f]
+
+FLAGS
+  -f, --force
+  -n, --name=<value>  name to print
+
+DESCRIPTION
+  describe the command here
+
+EXAMPLES
+  $ xc profile delete
+```
+
+## `xc profile ls [FILE]`
+
+describe the command here
+
+```
+USAGE
+  $ xc profile ls [FILE] [-n <value>] [-f]
+
+FLAGS
+  -f, --force
+  -n, --name=<value>  name to print
+
+DESCRIPTION
+  describe the command here
+
+EXAMPLES
+  $ xc profile ls
+```
+
+## `xc profile rename [FILE]`
+
+describe the command here
+
+```
+USAGE
+  $ xc profile rename [FILE] [-n <value>] [-f]
+
+FLAGS
+  -f, --force
+  -n, --name=<value>  name to print
+
+DESCRIPTION
+  describe the command here
+
+EXAMPLES
+  $ xc profile rename
+```
+
 ## `xc register`
 
 describe the command here
@@ -487,14 +584,14 @@ _See code: [dist/commands/register.ts](https://github.com/CrossCopy/crosscopy-cl
 
 ## `xc setting`
 
-Setting
+Visualize Current Setting
 
 ```
 USAGE
   $ xc setting
 
 DESCRIPTION
-  Setting
+  Visualize Current Setting
 
 EXAMPLES
   $ xc setting
@@ -508,27 +605,31 @@ Set Setting
 
 ```
 USAGE
-  $ xc setting set [--mode online|offline] [--server <value>]
+  $ xc setting set [--mode online|offline] [--server <value>] [--device <value>]
 
 FLAGS
+  --device=<value>  set device name
   --mode=<option>   set mode
                     <options: online|offline>
-  --server=<value>  [default: https://api.crosscopy.io] set server url
+  --server=<value>  set server url
 
 DESCRIPTION
   Set Setting
 
 EXAMPLES
-  $ xc setting set --mode=offline
+  $ xc setting set --mode=offline --server=http://api.crosscopy.io
 ```
 
-## `xc sync`
+## `xc sync [LISTEN]`
 
 Sync Data With CrossCopy Cloud
 
 ```
 USAGE
-  $ xc sync
+  $ xc sync [LISTEN] [-i]
+
+FLAGS
+  -i, --image  Sync Image from clipboard, without this flag, sync clipboard text by default
 
 DESCRIPTION
   Sync Data With CrossCopy Cloud
@@ -574,7 +675,7 @@ EXAMPLES
     $ xc update --available
 ```
 
-_See code: [@oclif/plugin-update](https://github.com/oclif/plugin-update/blob/v3.0.0/src/commands/update.ts)_
+_See code: [@oclif/plugin-update](https://github.com/oclif/plugin-update/blob/v3.0.7/src/commands/update.ts)_
 
 ## `xc upload`
 

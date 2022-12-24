@@ -29,7 +29,7 @@ export default class View extends Command {
     await dbService.init(this.setting.dbPath);
 
     const [allRecords, count] = await dbService.RecRepo.findAndCount({
-      select: ['id', 'uuid', 'createdAt', 'type', 'value'],
+      select: ['id', 'uuid', 'createdAt', 'type', 'value', 'insync'],
       order: {createdAt: 'DESC'},
     });
 
@@ -39,12 +39,14 @@ export default class View extends Command {
       'Created At': string;
       UUID?: string;
       id?: number | null;
+      type: string;
     };
 
     const displayRecords: DisplayTableCols[] = allRecords.map((r) => ({
       Online: Boolean(r.insync),
       Value: r.value.length > 40 ? `${r.value.slice(0, 40)}...` : r.value,
       'Created At': r.createdAt.toLocaleString(),
+      type: r.type,
     }));
     if (flags.uuid) {
       for (const [idx, r] of allRecords.entries()) {
