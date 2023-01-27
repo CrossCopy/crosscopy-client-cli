@@ -20,7 +20,7 @@ $ npm install -g @crosscopy/xc
 $ xc COMMAND
 running command...
 $ xc (--version)
-@crosscopy/xc/0.0.0 darwin-arm64 node-v18.12.0
+@crosscopy/xc/0.0.2 darwin-arm64 node-v18.12.1
 $ xc --help [COMMAND]
 USAGE
   $ xc COMMAND
@@ -34,7 +34,7 @@ USAGE
 * [`xc copy [FILE]`](#xc-copy-file)
 * [`xc default`](#xc-default)
 * [`xc delete [FILE]`](#xc-delete-file)
-* [`xc help [COMMAND]`](#xc-help-command)
+* [`xc help [COMMANDS]`](#xc-help-commands)
 * [`xc listen`](#xc-listen)
 * [`xc login`](#xc-login)
 * [`xc plugins`](#xc-plugins)
@@ -85,7 +85,7 @@ EXAMPLES
   $ xc autocomplete --refresh-cache
 ```
 
-_See code: [@oclif/plugin-autocomplete](https://github.com/oclif/plugin-autocomplete/blob/v1.3.6/src/commands/autocomplete/index.ts)_
+_See code: [@oclif/plugin-autocomplete](https://github.com/oclif/plugin-autocomplete/blob/v1.4.2/src/commands/autocomplete/index.ts)_
 
 ## `xc clear`
 
@@ -115,7 +115,7 @@ EXAMPLES
   $ xc clear --all
 ```
 
-_See code: [dist/commands/clear.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.0/dist/commands/clear.ts)_
+_See code: [dist/commands/clear.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.2/dist/commands/clear.ts)_
 
 ## `xc copy [FILE]`
 
@@ -139,7 +139,7 @@ EXAMPLES
   $ xc copy <filename.txt>
 ```
 
-_See code: [dist/commands/copy.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.0/dist/commands/copy.ts)_
+_See code: [dist/commands/copy.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.2/dist/commands/copy.ts)_
 
 ## `xc default`
 
@@ -153,7 +153,7 @@ DESCRIPTION
   Root Command
 ```
 
-_See code: [dist/commands/default.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.0/dist/commands/default.ts)_
+_See code: [dist/commands/default.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.2/dist/commands/default.ts)_
 
 ## `xc delete [FILE]`
 
@@ -188,18 +188,18 @@ EXAMPLES
   $ xc delete --numDays=7
 ```
 
-_See code: [dist/commands/delete.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.0/dist/commands/delete.ts)_
+_See code: [dist/commands/delete.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.2/dist/commands/delete.ts)_
 
-## `xc help [COMMAND]`
+## `xc help [COMMANDS]`
 
 Display help for xc.
 
 ```
 USAGE
-  $ xc help [COMMAND] [-n]
+  $ xc help [COMMANDS] [-n]
 
 ARGUMENTS
-  COMMAND  Command to show help for.
+  COMMANDS  Command to show help for.
 
 FLAGS
   -n, --nested-commands  Include all nested commands in the output.
@@ -208,7 +208,7 @@ DESCRIPTION
   Display help for xc.
 ```
 
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v5.1.19/src/commands/help.ts)_
+_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v5.2.1/src/commands/help.ts)_
 
 ## `xc listen`
 
@@ -225,7 +225,7 @@ EXAMPLES
   $ xc listen
 ```
 
-_See code: [dist/commands/listen.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.0/dist/commands/listen.ts)_
+_See code: [dist/commands/listen.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.2/dist/commands/listen.ts)_
 
 ## `xc login`
 
@@ -250,7 +250,7 @@ EXAMPLES
   $ xc login -e username@email.com -p password
 ```
 
-_See code: [dist/commands/login.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.0/dist/commands/login.ts)_
+_See code: [dist/commands/login.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.2/dist/commands/login.ts)_
 
 ## `xc plugins`
 
@@ -270,7 +270,7 @@ EXAMPLES
   $ xc plugins
 ```
 
-_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v2.1.7/src/commands/plugins/index.ts)_
+_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v2.2.4/src/commands/plugins/index.ts)_
 
 ## `xc plugins:install PLUGIN...`
 
@@ -580,7 +580,7 @@ EXAMPLES
   $ xc register -e example@email.com -u username
 ```
 
-_See code: [dist/commands/register.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.0/dist/commands/register.ts)_
+_See code: [dist/commands/register.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.2/dist/commands/register.ts)_
 
 ## `xc setting`
 
@@ -597,7 +597,7 @@ EXAMPLES
   $ xc setting
 ```
 
-_See code: [dist/commands/setting/index.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.0/dist/commands/setting/index.ts)_
+_See code: [dist/commands/setting/index.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.2/dist/commands/setting/index.ts)_
 
 ## `xc setting set`
 
@@ -638,7 +638,7 @@ EXAMPLES
   $ xc sync
 ```
 
-_See code: [dist/commands/sync.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.0/dist/commands/sync.ts)_
+_See code: [dist/commands/sync.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.2/dist/commands/sync.ts)_
 
 ## `xc update [CHANNEL]`
 
@@ -675,7 +675,7 @@ EXAMPLES
     $ xc update --available
 ```
 
-_See code: [@oclif/plugin-update](https://github.com/oclif/plugin-update/blob/v3.0.7/src/commands/update.ts)_
+_See code: [@oclif/plugin-update](https://github.com/oclif/plugin-update/blob/v3.1.0/src/commands/update.ts)_
 
 ## `xc upload`
 
@@ -694,7 +694,7 @@ EXAMPLES
   $ xc < content.txt
 ```
 
-_See code: [dist/commands/upload.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.0/dist/commands/upload.ts)_
+_See code: [dist/commands/upload.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.2/dist/commands/upload.ts)_
 
 ## `xc view`
 
@@ -715,5 +715,5 @@ EXAMPLES
   $ xc view
 ```
 
-_See code: [dist/commands/view.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.0/dist/commands/view.ts)_
+_See code: [dist/commands/view.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.2/dist/commands/view.ts)_
 <!-- commandsstop -->
