@@ -109,6 +109,7 @@ export default class Listen extends Command {
     const accessToken = this.auth.accessToken;
     if (!accessToken) throw new Error('No Access Token');
     // Reference: https://www.npmjs.com/package/graphql-ws
+
     const client = createClient({
       url: this.setting.subscriptionUrl,
       webSocketImpl: WebSocket,
@@ -196,6 +197,8 @@ export default class Listen extends Command {
         },
       );
     });
-    await syncPromise;
+    syncPromise.catch((error) => {
+      console.error(error.error);
+    });
   }
 }

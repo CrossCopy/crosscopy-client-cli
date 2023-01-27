@@ -20,7 +20,7 @@ $ npm install -g @crosscopy/xc
 $ xc COMMAND
 running command...
 $ xc (--version)
-@crosscopy/xc/0.0.2 darwin-arm64 node-v18.12.1
+@crosscopy/xc/0.0.3 darwin-arm64 node-v18.12.1
 $ xc --help [COMMAND]
 USAGE
   $ xc COMMAND
@@ -115,7 +115,7 @@ EXAMPLES
   $ xc clear --all
 ```
 
-_See code: [dist/commands/clear.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.2/dist/commands/clear.ts)_
+_See code: [dist/commands/clear.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.3/dist/commands/clear.ts)_
 
 ## `xc copy [FILE]`
 
@@ -139,7 +139,7 @@ EXAMPLES
   $ xc copy <filename.txt>
 ```
 
-_See code: [dist/commands/copy.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.2/dist/commands/copy.ts)_
+_See code: [dist/commands/copy.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.3/dist/commands/copy.ts)_
 
 ## `xc default`
 
@@ -153,7 +153,7 @@ DESCRIPTION
   Root Command
 ```
 
-_See code: [dist/commands/default.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.2/dist/commands/default.ts)_
+_See code: [dist/commands/default.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.3/dist/commands/default.ts)_
 
 ## `xc delete [FILE]`
 
@@ -188,7 +188,7 @@ EXAMPLES
   $ xc delete --numDays=7
 ```
 
-_See code: [dist/commands/delete.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.2/dist/commands/delete.ts)_
+_See code: [dist/commands/delete.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.3/dist/commands/delete.ts)_
 
 ## `xc help [COMMANDS]`
 
@@ -225,7 +225,7 @@ EXAMPLES
   $ xc listen
 ```
 
-_See code: [dist/commands/listen.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.2/dist/commands/listen.ts)_
+_See code: [dist/commands/listen.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.3/dist/commands/listen.ts)_
 
 ## `xc login`
 
@@ -250,7 +250,7 @@ EXAMPLES
   $ xc login -e username@email.com -p password
 ```
 
-_See code: [dist/commands/login.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.2/dist/commands/login.ts)_
+_See code: [dist/commands/login.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.3/dist/commands/login.ts)_
 
 ## `xc plugins`
 
@@ -580,7 +580,7 @@ EXAMPLES
   $ xc register -e example@email.com -u username
 ```
 
-_See code: [dist/commands/register.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.2/dist/commands/register.ts)_
+_See code: [dist/commands/register.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.3/dist/commands/register.ts)_
 
 ## `xc setting`
 
@@ -597,7 +597,7 @@ EXAMPLES
   $ xc setting
 ```
 
-_See code: [dist/commands/setting/index.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.2/dist/commands/setting/index.ts)_
+_See code: [dist/commands/setting/index.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.3/dist/commands/setting/index.ts)_
 
 ## `xc setting set`
 
@@ -638,7 +638,7 @@ EXAMPLES
   $ xc sync
 ```
 
-_See code: [dist/commands/sync.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.2/dist/commands/sync.ts)_
+_See code: [dist/commands/sync.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.3/dist/commands/sync.ts)_
 
 ## `xc update [CHANNEL]`
 
@@ -694,7 +694,7 @@ EXAMPLES
   $ xc < content.txt
 ```
 
-_See code: [dist/commands/upload.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.2/dist/commands/upload.ts)_
+_See code: [dist/commands/upload.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.3/dist/commands/upload.ts)_
 
 ## `xc view`
 
@@ -715,5 +715,5 @@ EXAMPLES
   $ xc view
 ```
 
-_See code: [dist/commands/view.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.2/dist/commands/view.ts)_
+_See code: [dist/commands/view.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.3/dist/commands/view.ts)_
 <!-- commandsstop -->
