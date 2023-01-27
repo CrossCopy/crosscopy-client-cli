@@ -3,10 +3,11 @@ import fs from 'node:fs';
 import path from 'node:path';
 // import readline from 'node:readline';
 import AuthConfig from '../../config/auth';
-import SettingConfig from '../../config/setting';
+import SettingConfig, {SettingSingleton} from '../../config/setting';
 import {db} from '@crosscopy/core';
 import debug from 'debug';
 import {stderrLogger} from '../../util/logger';
+import {DBService} from '@crosscopy/core/database';
 
 debug.enable('crosscopy:*');
 // const rl = readline.createInterface({
@@ -16,6 +17,11 @@ debug.enable('crosscopy:*');
 // });
 
 const hook: Hook<'init'> = async function (_options) {
+  if (_options.id === 'setting') {
+    return;
+  }
+
+
   // stderrLogger.info('config init hook');
 
   // console.log(`example init hook running before ${options.id}`);
@@ -34,22 +40,52 @@ const hook: Hook<'init'> = async function (_options) {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const setting = new SettingConfig(this.config.configDir);
-
-  // TODO: init profile and device
-
-  // this.log(`setting config file: ${setting.configFilePath}`);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const auth = new AuthConfig(this.config.configDir);
-  // this.log(`auth config file: ${auth.configFilePath}`);
-  const dbPath = path.join(this.config.dataDir, 'db.sqlite');
+  const setting = new SettingConfig(this.config.configDir); // load settings from config file
+  const dbPath = path.join(this.config.dataDir, 'db.sqlite'); // default db path
   if (!setting.dbPath) {
     setting.dbPath = dbPath;
     setting.save();
   }
 
+  // console.log(setting);
   const dataSource = db.createDataSource(dbPath);
   await dataSource.initialize();
+
+  const settingIns = SettingSingleton.getInstance(); // load data to setting singleton class, which contains profile-specific settings
+  const dbService = DBService.instance;
+  await dbService.init(setting.dbPath);
+  // const SettingSingleton.getInstance().profile
+  await settingIns.init(
+    setting.mode,
+    setting.deviceId,
+    setting.profileId,
+    setting.dbPath,
+  );
+
+  const curProfile = SettingSingleton.getInstance().profile;
+  if (curProfile?.preferences) {
+    // use profile's server url if exists
+    const preferences = JSON.parse(curProfile.preferences);
+    if (preferences.server) {
+      SettingSingleton.getInstance().server = preferences.server;
+    } else {
+      // use default server url on disk otherwise
+      SettingSingleton.getInstance().server = setting.server;
+    }
+  } else {
+    // use default server url on disk otherwise
+    SettingSingleton.getInstance().server = setting.server;
+  }
+
+  // console.log(SettingSingleton.getInstance().profile);
+  // console.log(SettingSingleton.getInstance().server);
+
+  // TODO: init profile and device
+  // this.log(`setting config file: ${setting.configFilePath}`);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const auth = new AuthConfig(this.config.configDir);
+  // this.log(`auth config file: ${auth.configFilePath}`);
+
   // const timeout = setTimeout(() => {
   //   rl.close();
   // }, 100);

@@ -1,6 +1,6 @@
 import {Command} from '@oclif/core';
 import {DBService} from '@crosscopy/core/database';
-import SettingConfig, {Mode} from '../config/setting';
+import SettingConfig, {Mode, SettingSingleton} from '../config/setting';
 import {stderrLogger, stdoutLogger} from '../util/logger';
 import {RecordType, requests as req} from '@crosscopy/graphql-schema';
 import {readStdin} from '../util/stdin';
@@ -10,6 +10,7 @@ import {AuthConfig} from '../config';
 import {generatePluginManager} from '../util/plugin';
 import {generateSDK} from '../util/graphql';
 import {upload} from '../util/sync';
+import {graphqlUrl} from '../util/url';
 
 export default class Default extends Command {
   static description = 'Root Command';
@@ -65,7 +66,7 @@ export default class Default extends Command {
         );
 
         const sdk = generateSDK(
-          this.setting.graphqlUrl,
+          graphqlUrl(SettingSingleton.instance.server),
           this.auth.BearerAccessToken,
         );
         const addedRecord = await upload(recToCreate, pluginManager, sdk);

@@ -9,7 +9,8 @@ import {generateSDK} from '../util/graphql';
 import fs from 'node:fs';
 import {stdoutLogger} from '../util/logger';
 import {upload} from '../util/sync';
-import {Mode} from '../config/setting';
+import {Mode, SettingSingleton} from '../config/setting';
+import {graphqlUrl} from '../util/url';
 
 /**
  * TODO: test coping a very long string that prisma can't handle, see what error is returned.
@@ -38,6 +39,7 @@ export default class Copy extends Command {
 
   public async run(): Promise<void> {
     this.log('Enter content you want to copy, press Ctrl+D to finish');
+    // console.log(SettingSingleton.getInstance().profile);
     const {args, flags} = await this.parse(Copy);
     let contentType: req.RecordType = req.RecordType.Text;
     let contentToUpload: string;
@@ -79,7 +81,8 @@ export default class Copy extends Command {
       const pluginManager = await generatePluginManager(this.auth.passwordHash);
 
       const sdk = generateSDK(
-        this.setting.graphqlUrl,
+        // this.setting.graphqlUrl,
+        graphqlUrl(SettingSingleton.instance.server),
         this.auth.BearerAccessToken,
       );
       const addedRecord = await upload(recToCreate, pluginManager, sdk);

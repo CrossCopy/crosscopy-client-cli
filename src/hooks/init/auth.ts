@@ -8,6 +8,10 @@ import {stderrLogger, stdoutLogger} from '../../util/logger';
 
 const hook: Hook<'init'> = async function (_options) {
   // check access token and refresh token expiry time and refresh if needed
+  if (_options.id === 'setting:set') {
+    return;
+  }
+
   stdoutLogger.info(
     'Checking access token and refresh token expiry time and refresh if needed',
   );
@@ -27,6 +31,7 @@ const hook: Hook<'init'> = async function (_options) {
 
   if (accessTokenExpired) {
     if (refreshTokenExpired) {
+      stdoutLogger.warn('Refresh Token Expired. Have to login again.');
       // both tokens expired, logout
       stderrLogger.warn('Authentication expired, please login again');
       auth.accessToken = null;

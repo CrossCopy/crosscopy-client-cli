@@ -1,4 +1,4 @@
-import * as db from '@crosscopy/core/database';
+import {Device, Profile, DBService} from '@crosscopy/core/database';
 import Config from './config';
 import _ from 'lodash';
 
@@ -9,25 +9,91 @@ export enum Mode {
 }
 
 export type Setting = {
-  plugins: [];
-  server: string;
+  // plugins: [];
   dbPath: string;
+  server: string;
   mode: Mode;
   deviceId: number;
   profileId: number;
 };
 
 export const settingInitConfig: Setting = {
-  plugins: [],
-  server: 'https://api.crosscopy.io',
+  // plugins: [],
   dbPath: '',
   mode: Mode.online,
-  // deviceName: `${os.hostname()}-cli`,
-  // profileName: 'Default',
+  server: 'https://api.crosscopy.io',
   deviceId: 0,
   profileId: 0,
 };
 
+export class SettingSingleton {
+  mode: Mode;
+  private _deviceId: number;
+  private _device?: Device;
+  private _profile?: Profile;
+  private _profileId: number;
+  dbPath: string;
+  private static _instance: SettingSingleton;
+  public server: string;
+
+  get device(): Device | undefined {
+    return this._device;
+  }
+
+  get deviceId(): number {
+    return this._deviceId;
+  }
+
+  get profileId(): number {
+    return this._profileId;
+  }
+
+  get profile(): Profile | undefined {
+    return this._profile;
+  }
+
+  async setDeviceId(id: number) {
+    this._deviceId = id;
+    this._device = await DBService.instance.deviceById(this._deviceId);
+  }
+
+  async setProfileId(id: number) {
+    this._profileId = id;
+    this._profile = await DBService.instance.profileById(this._profileId);
+  }
+
+  private constructor() {
+    // dummy data for init
+    this.mode = Mode.online;
+    this._deviceId = 0;
+    this._profileId = 0;
+    this.dbPath = '';
+    this.server = '';
+  }
+
+  async init(mode: Mode, deviceId: number, profileId: number, dbPath: string) {
+    this.mode = mode;
+    await this.setDeviceId(deviceId);
+    await this.setProfileId(profileId);
+    this.dbPath = dbPath;
+  }
+
+  public static get instance(): SettingSingleton {
+    return SettingSingleton.getInstance();
+  }
+
+  public static getInstance(): SettingSingleton {
+    if (!SettingSingleton._instance) {
+      SettingSingleton._instance = new SettingSingleton();
+    }
+
+    return SettingSingleton._instance;
+  }
+}
+
+/**
+ * SettingConfig is for loading setting from a json file
+ */
 export default class SettingConfig extends Config<Setting> {
   // private static instance: SettingConfig;
   // private constructor() {}
@@ -81,12 +147,12 @@ export default class SettingConfig extends Config<Setting> {
     this.save();
   }
 
-  get device(): Promise<db.Device> {
-    return db.DBService.instance.deviceById(this.deviceId);
+  get device(): Promise<Device> {
+    return DBService.instance.deviceById(this.deviceId);
   }
 
-  get profile(): Promise<db.Profile> {
-    return db.DBService.instance.profileById(this.profileId);
+  get profile(): Promise<Profile> {
+    return DBService.instance.profileById(this.profileId);
   }
 
   get socketioUrl(): string {

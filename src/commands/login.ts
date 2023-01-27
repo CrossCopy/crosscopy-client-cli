@@ -15,6 +15,7 @@ const {getTextPayload} = plugin;
 const {getSdk} = req;
 import {GraphQLClient} from 'graphql-request';
 import {SettingConfig, AuthConfig} from '../config';
+import {stdoutLogger} from '../util/logger';
 
 export default class Login extends Command {
   static description = 'Login to CrossCopy Cloud';
@@ -33,7 +34,7 @@ export default class Login extends Command {
   };
 
   public async run(): Promise<void> {
-    this.log(this.setting.graphqlUrl);
+    stdoutLogger.info(`Using loaded server url: ${this.setting.graphqlUrl}`);
     const gqlClient = new GraphQLClient(this.setting.graphqlUrl);
     const sdk = getSdk(gqlClient);
     const {flags} = await this.parse(Login);
@@ -127,9 +128,9 @@ export default class Login extends Command {
         );
 
         // TODO: consider extract multi-record decryption as a helper
-        const payloads = records.map(rec => getTextPayload(rec.value!));
+        const payloads = records.map((rec) => getTextPayload(rec.value!));
         pluginManager.downloadMany(payloads);
-        const decryptRecords = payloads.map(payload => payload.content);
+        const decryptRecords = payloads.map((payload) => payload.content);
         for (const [i, rec] of records.entries()) {
           rec.value = decryptRecords.at(i);
         }
@@ -190,14 +191,14 @@ export default class Login extends Command {
 
         // Verify and Log
         this.log(
-          `Selected Device: ${(await dbService.deviceById(
-            this.setting.deviceId,
-          )).deviceName}`,
+          `Selected Device: ${
+            (await dbService.deviceById(this.setting.deviceId)).deviceName
+          }`,
         );
         this.log(
-          `Selected Profile: ${(await dbService.profileById(
-            this.setting.profileId,
-          )).profileName}`,
+          `Selected Profile: ${
+            (await dbService.profileById(this.setting.profileId)).profileName
+          }`,
         );
       })
       .catch((error) => {

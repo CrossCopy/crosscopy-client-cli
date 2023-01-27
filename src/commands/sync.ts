@@ -11,7 +11,8 @@ import {v4 as uuidv4} from 'uuid';
 import {syncDownload} from '../util/sync';
 import {stderrLogger, stdoutLogger} from '../util/logger';
 import _ from 'lodash';
-import {Mode} from '../config/setting';
+import {Mode, SettingSingleton} from '../config/setting';
+import {graphqlUrl} from '../util/url';
 
 const {getSdk} = req;
 
@@ -38,11 +39,14 @@ export default class Sync extends Command {
     const {flags} = await this.parse(Sync);
     const dbService = DBService.instance;
     await dbService.init(this.setting.dbPath);
-    const gqlClient = new GraphQLClient(this.setting.graphqlUrl, {
-      headers: {
-        Authorization: this.auth.BearerAccessToken,
+    const gqlClient = new GraphQLClient(
+      graphqlUrl(SettingSingleton.instance.server),
+      {
+        headers: {
+          Authorization: this.auth.BearerAccessToken,
+        },
       },
-    });
+    );
     if (!this.auth.passwordHash)
       throw new Error('No Decryption Key Found, Please Login');
     const pluginManager = await generatePluginManager(this.auth.passwordHash);

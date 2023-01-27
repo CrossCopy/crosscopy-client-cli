@@ -13,6 +13,8 @@ import {stderrLogger, stdoutLogger} from '../util/logger';
 import {generateSDK} from '../util/graphql';
 import {upload} from '../util/sync';
 import fs from 'node:fs';
+import {graphqlUrl} from '../util/url';
+import {SettingSingleton} from '../config/setting';
 
 export default class Listen extends Command {
   static description = 'Realtime Syncing';
@@ -56,7 +58,8 @@ export default class Listen extends Command {
     // console.log('dataToUpload', dataToUpload);
 
     const sdk = generateSDK(
-      this.setting.graphqlUrl,
+      // this.setting.graphqlUrl,
+      graphqlUrl(SettingSingleton.instance.server),
       this.auth.BearerAccessToken,
     );
 
@@ -76,6 +79,7 @@ export default class Listen extends Command {
           type: RecordType.Text,
           value: data,
         };
+        dbService.createRec(recToCreate);
         upload(recToCreate, pluginManager, sdk);
       }
     });
