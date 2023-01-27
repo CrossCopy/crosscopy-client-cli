@@ -84,9 +84,9 @@
     "default": "default",
     "hooks": {
       "init": [
-        "./src/hooks/init/auth",
-        "./src/hooks/init/config",
-        "./src/hooks/init/wakeup"
+        "./dist/hooks/init/auth",
+        "./dist/hooks/init/config",
+        "./dist/hooks/init/wakeup"
       ]
     },
     "macos": {

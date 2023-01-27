@@ -21,7 +21,6 @@ const hook: Hook<'init'> = async function (_options) {
     return;
   }
 
-
   // stderrLogger.info('config init hook');
 
   // console.log(`example init hook running before ${options.id}`);
@@ -42,6 +41,8 @@ const hook: Hook<'init'> = async function (_options) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const setting = new SettingConfig(this.config.configDir); // load settings from config file
   const dbPath = path.join(this.config.dataDir, 'db.sqlite'); // default db path
+  console.log('dbPath');
+  console.log(dbPath);
   if (!setting.dbPath) {
     setting.dbPath = dbPath;
     setting.save();
