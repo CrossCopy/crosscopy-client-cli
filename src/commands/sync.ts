@@ -94,10 +94,10 @@ export default class Sync extends Command {
         return;
       }
 
-      if (this.setting.mode === Mode.online && lastRec.insync) {
-        stdoutLogger.warn('Clipboard is in sync with cloud');
-        return;
-      }
+      // if (this.setting.mode === Mode.online && lastRec.insync) {
+      //   stdoutLogger.warn('Clipboard is in sync with cloud');
+      //   return;
+      // }
     } else {
       // different clipboar content
       // continue
