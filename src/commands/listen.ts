@@ -99,7 +99,6 @@ export default class Listen extends Command {
           type: RecordType.Image,
           value: base64Img, // Buffer is pure image buffer, encode to base64 and transfer
         };
-        fs.writeFileSync('image-base64.txt', base64Img);
         dbService.createRec(recToCreate);
         upload(recToCreate, pluginManager, sdk);
       }
