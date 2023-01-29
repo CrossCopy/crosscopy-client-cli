@@ -164,7 +164,9 @@ export default class SettingConfig extends Config<Setting> {
   }
 
   get subscriptionUrl(): string {
-    return `ws://${this._config.server.split('//')[1]}/graphql`;
+    const wsProtocol =
+      this._config.server.slice(0, 5) === 'https' ? 'wss' : 'ws'; // use wss when https enabled for encryption
+    return `${wsProtocol}://${this._config.server.split('//')[1]}/graphql`;
   }
 
   /**

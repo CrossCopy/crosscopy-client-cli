@@ -12,8 +12,7 @@ import {DBService} from '@crosscopy/core/database';
 import {stderrLogger, stdoutLogger} from '../util/logger';
 import {generateSDK} from '../util/graphql';
 import {upload} from '../util/sync';
-import fs from 'node:fs';
-import {graphqlUrl} from '../util/url';
+import {graphqlUrl, subscriptionUrl} from '../util/url';
 import {SettingSingleton} from '../config/setting';
 
 export default class Listen extends Command {
@@ -56,7 +55,6 @@ export default class Listen extends Command {
     // pluginManager.upload(payload);
     // const dataToUpload = payload.content;
     // console.log('dataToUpload', dataToUpload);
-
     const sdk = generateSDK(
       // this.setting.graphqlUrl,
       graphqlUrl(SettingSingleton.instance.server),
@@ -108,9 +106,11 @@ export default class Listen extends Command {
     const accessToken = this.auth.accessToken;
     if (!accessToken) throw new Error('No Access Token');
     // Reference: https://www.npmjs.com/package/graphql-ws
+    const subUrl = subscriptionUrl(SettingSingleton.instance.server);
+    // console.log(subUrl);
 
     const client = createClient({
-      url: this.setting.subscriptionUrl,
+      url: subUrl,
       webSocketImpl: WebSocket,
       generateID: () => uuidv4(),
       connectionParams: {authToken: this.auth.accessToken},
@@ -167,10 +167,11 @@ export default class Listen extends Command {
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars, unicorn/consistent-function-scoping
     let unsubscribe = () => {
-      console.log(`Unsubscribe from ${this.setting.subscriptionUrl}`);
+      console.log(`Unsubscribe from ${subUrl}`);
     };
 
     const syncPromise: Promise<void> = new Promise((resolve, reject) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       unsubscribe = client.subscribe(
         {
           query: `
@@ -196,8 +197,10 @@ export default class Listen extends Command {
         },
       );
     });
-    syncPromise.catch((error) => {
-      console.error(error.error);
-    });
+    syncPromise
+      .catch((error) => {
+        stderrLogger.error('Sync Promise Error');
+        console.error(error.error);
+      });
   }
 }

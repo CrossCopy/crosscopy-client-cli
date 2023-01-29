@@ -16,6 +16,7 @@ export const generatePluginManager = async (
   });
   // const notionPlugin = new externalPlugins.NotionPlugin();
   const headPlugins: CorePlugin[] = [];
+  // const tailPlugins: CorePlugin[] = [];
   const tailPlugins: CorePlugin[] = [encryptionPlugin];
   // const tailPlugins: CorePlugin[] = [];
   const _externalPlugins: ExternalPlugin[] = [];
