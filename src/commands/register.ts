@@ -68,7 +68,6 @@ export default class Register extends Command {
         throw new Error("Password Entered Don't match");
     }
 
-    console.log(responses);
     let code = '';
     sdk
       .sendEmailOwnershipVerificationCode({
@@ -76,7 +75,7 @@ export default class Register extends Command {
         email: email as string,
       })
       .then((sendVerificationRes) => {
-        console.log(sendVerificationRes);
+        // console.log(sendVerificationRes);
         return inquirer.prompt([
           {name: 'code', message: 'Email Verification Code', type: 'input'},
         ]);
@@ -101,7 +100,7 @@ export default class Register extends Command {
           username: username as string,
           email: email as string,
           code,
-          password: 'sad',
+          password: password as string,
         });
       })
       .then((signupRes) => {
