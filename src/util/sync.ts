@@ -1,12 +1,11 @@
 import {RecordType, requests as req} from '@crosscopy/graphql-schema';
 import {DBService, Rec, RecordCreateInput} from '@crosscopy/core/database';
 import {getPayload, PluginManager} from '@crosscopy/core/plugin';
-import {stdoutLogger} from './logger';
-import clipboard from '@crosscopy/clipboard';
-import {v4 as uuidv4} from 'uuid';
-import {Mode, Setting} from '../config/setting';
+import {stderrLogger, stdoutLogger} from './logger';
 import bytes from 'bytes';
 import {reject} from 'lodash';
+import {hasDisplay} from './util';
+import {writeToClipboard} from './clipboard';
 
 /**
  * sync downloaded content to local clipboard and database
@@ -83,21 +82,18 @@ export const syncDownload = async (
   );
 
   // write latest record to clipboard
+  if (!hasDisplay()) {
+    stderrLogger.warn(
+      'No DISPLAY, Will not write latest synced record to clipboard',
+    );
+    return;
+  }
+
   const lastRec2 = await dbService.selectLastRecord();
   if (lastRec2) {
-    if (lastRec2.type === RecordType.Text) {
-      if (clipboard.readTextSync() === lastRec2.value) {
-        stdoutLogger.warn('Text is unchanged, skip');
-      } else {
-        clipboard.writeTextSync(lastRec2.value);
-      }
-    } else if (lastRec2.type === RecordType.Image) {
-      if (clipboard.readImageBase64Sync() === lastRec2.value) {
-        stdoutLogger.warn('Image is unchanged, skip');
-      } else {
-        clipboard.writeImageSync(lastRec2.value);
-      }
-    }
+    writeToClipboard(lastRec2);
+  } else {
+    stderrLogger.warn('No Latest Record Found');
   }
 };
 

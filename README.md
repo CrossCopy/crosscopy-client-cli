@@ -20,7 +20,7 @@ $ npm install -g @crosscopy/xc
 $ xc COMMAND
 running command...
 $ xc (--version)
-@crosscopy/xc/0.0.8 darwin-arm64 node-v18.12.1
+@crosscopy/xc/0.0.9 darwin-arm64 node-v18.12.1
 $ xc --help [COMMAND]
 USAGE
   $ xc COMMAND
@@ -32,11 +32,12 @@ USAGE
 * [`xc autocomplete [SHELL]`](#xc-autocomplete-shell)
 * [`xc clear`](#xc-clear)
 * [`xc copy [FILE]`](#xc-copy-file)
-* [`xc default`](#xc-default)
 * [`xc delete [FILE]`](#xc-delete-file)
+* [`xc exp [FILE]`](#xc-exp-file)
 * [`xc help [COMMANDS]`](#xc-help-commands)
 * [`xc listen`](#xc-listen)
 * [`xc login`](#xc-login)
+* [`xc paste [FILE]`](#xc-paste-file)
 * [`xc plugins`](#xc-plugins)
 * [`xc plugins:install PLUGIN...`](#xc-pluginsinstall-plugin)
 * [`xc plugins:inspect PLUGIN...`](#xc-pluginsinspect-plugin)
@@ -51,11 +52,11 @@ USAGE
 * [`xc profile ls [FILE]`](#xc-profile-ls-file)
 * [`xc profile rename [FILE]`](#xc-profile-rename-file)
 * [`xc register`](#xc-register)
+* [`xc root`](#xc-root)
 * [`xc setting`](#xc-setting)
 * [`xc setting set`](#xc-setting-set)
 * [`xc sync [LISTEN]`](#xc-sync-listen)
 * [`xc update [CHANNEL]`](#xc-update-channel)
-* [`xc upload`](#xc-upload)
 * [`xc view`](#xc-view)
 
 ## `xc autocomplete [SHELL]`
@@ -115,7 +116,7 @@ EXAMPLES
   $ xc clear --all
 ```
 
-_See code: [dist/commands/clear.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.8/dist/commands/clear.ts)_
+_See code: [dist/commands/clear.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.9/dist/commands/clear.ts)_
 
 ## `xc copy [FILE]`
 
@@ -139,21 +140,7 @@ EXAMPLES
   $ xc copy <filename.txt>
 ```
 
-_See code: [dist/commands/copy.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.8/dist/commands/copy.ts)_
-
-## `xc default`
-
-Root Command
-
-```
-USAGE
-  $ xc default
-
-DESCRIPTION
-  Root Command
-```
-
-_See code: [dist/commands/default.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.8/dist/commands/default.ts)_
+_See code: [dist/commands/copy.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.9/dist/commands/copy.ts)_
 
 ## `xc delete [FILE]`
 
@@ -188,7 +175,24 @@ EXAMPLES
   $ xc delete --numDays=7
 ```
 
-_See code: [dist/commands/delete.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.8/dist/commands/delete.ts)_
+_See code: [dist/commands/delete.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.9/dist/commands/delete.ts)_
+
+## `xc exp [FILE]`
+
+describe the command here
+
+```
+USAGE
+  $ xc exp [FILE]
+
+DESCRIPTION
+  describe the command here
+
+EXAMPLES
+  $ xc exp
+```
+
+_See code: [dist/commands/exp.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.9/dist/commands/exp.ts)_
 
 ## `xc help [COMMANDS]`
 
@@ -225,7 +229,7 @@ EXAMPLES
   $ xc listen
 ```
 
-_See code: [dist/commands/listen.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.8/dist/commands/listen.ts)_
+_See code: [dist/commands/listen.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.9/dist/commands/listen.ts)_
 
 ## `xc login`
 
@@ -250,7 +254,40 @@ EXAMPLES
   $ xc login -e username@email.com -p password
 ```
 
-_See code: [dist/commands/login.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.8/dist/commands/login.ts)_
+_See code: [dist/commands/login.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.9/dist/commands/login.ts)_
+
+## `xc paste [FILE]`
+
+Get Clipboard History Item
+
+```
+USAGE
+  $ xc paste [FILE] [--id <value>] [--uuid <value>] [-c] [--imageFile <value>]
+
+FLAGS
+  -c, --toClipboard    Output to clipboard.
+  --id=<value>         Database id of clipboard item to get
+  --imageFile=<value>  Output to image file, only ends with .png
+  --uuid=<value>       uuid of clipboard item to get
+
+DESCRIPTION
+  Get Clipboard History Item
+
+  Paste: Get clipboard history item, output to stdout or clipboard
+
+EXAMPLES
+  $ xc paste
+
+  $ xc paste --id 10
+
+  $ xc paste --uuid <uuid>
+
+  $ xc paste --id 10 --toClipboard
+
+  $ xc paste --uuid <uuid> --imageFile image.png
+```
+
+_See code: [dist/commands/paste.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.9/dist/commands/paste.ts)_
 
 ## `xc plugins`
 
@@ -580,7 +617,21 @@ EXAMPLES
   $ xc register -e example@email.com -u username
 ```
 
-_See code: [dist/commands/register.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.8/dist/commands/register.ts)_
+_See code: [dist/commands/register.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.9/dist/commands/register.ts)_
+
+## `xc root`
+
+Root Command
+
+```
+USAGE
+  $ xc root
+
+DESCRIPTION
+  Root Command
+```
+
+_See code: [dist/commands/root.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.9/dist/commands/root.ts)_
 
 ## `xc setting`
 
@@ -597,7 +648,7 @@ EXAMPLES
   $ xc setting
 ```
 
-_See code: [dist/commands/setting/index.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.8/dist/commands/setting/index.ts)_
+_See code: [dist/commands/setting/index.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.9/dist/commands/setting/index.ts)_
 
 ## `xc setting set`
 
@@ -638,7 +689,7 @@ EXAMPLES
   $ xc sync
 ```
 
-_See code: [dist/commands/sync.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.8/dist/commands/sync.ts)_
+_See code: [dist/commands/sync.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.9/dist/commands/sync.ts)_
 
 ## `xc update [CHANNEL]`
 
@@ -677,36 +728,17 @@ EXAMPLES
 
 _See code: [@oclif/plugin-update](https://github.com/oclif/plugin-update/blob/v3.1.0/src/commands/update.ts)_
 
-## `xc upload`
-
-Upload some content
-
-```
-USAGE
-  $ xc upload
-
-DESCRIPTION
-  Upload some content
-
-EXAMPLES
-  echo "content" | xc
-
-  $ xc < content.txt
-```
-
-_See code: [dist/commands/upload.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.8/dist/commands/upload.ts)_
-
 ## `xc view`
 
 View Clipboard Data
 
 ```
 USAGE
-  $ xc view [--uuid] [--id]
+  $ xc view [--uuid] [-n <value>]
 
 FLAGS
-  --id    Display database (takes more space, but could be used to delete records)
-  --uuid  Display UUID (takes more space, but could be used to delete records)
+  -n, --num=<value>  Number of records to display
+  --uuid             Display UUID (takes more space, but could be used to delete records)
 
 DESCRIPTION
   View Clipboard Data
@@ -715,5 +747,5 @@ EXAMPLES
   $ xc view
 ```
 
-_See code: [dist/commands/view.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.8/dist/commands/view.ts)_
+_See code: [dist/commands/view.ts](https://github.com/CrossCopy/crosscopy-client-cli/blob/v0.0.9/dist/commands/view.ts)_
 <!-- commandsstop -->

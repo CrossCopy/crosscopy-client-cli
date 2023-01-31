@@ -1,10 +1,9 @@
 import {Command} from '@oclif/core';
 import {DBService} from '@crosscopy/core/database';
 import SettingConfig, {Mode, SettingSingleton} from '../config/setting';
-import {stderrLogger, stdoutLogger} from '../util/logger';
+import {stdoutLogger} from '../util/logger';
 import {RecordType, requests as req} from '@crosscopy/graphql-schema';
 import {readStdin} from '../util/stdin';
-import Copy from './copy';
 import {v4 as uuidv4} from 'uuid';
 import {AuthConfig} from '../config';
 import {generatePluginManager} from '../util/plugin';

@@ -2,7 +2,6 @@ import {Hook} from '@oclif/core';
 import {GraphQLClient} from 'graphql-request';
 import {SettingConfig} from '../../config';
 import {requests} from '@crosscopy/graphql-schema';
-import {stderrLogger} from '../../util/logger';
 
 const hook: Hook<'init'> = async function (_options) {
   // stderrLogger.info('wakeup init hook');

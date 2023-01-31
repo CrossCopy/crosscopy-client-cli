@@ -1,6 +1,6 @@
 {
   "name": "@crosscopy/xc",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "CrossCopy CLI",
   "author": "Huakun Shen @HuakunShen",
   "bin": {
@@ -81,12 +81,14 @@
     "bin": "xc",
     "dirname": "xc",
     "commands": "./dist/commands",
-    "default": "default",
     "hooks": {
       "init": [
         "./dist/hooks/init/auth",
         "./dist/hooks/init/config",
         "./dist/hooks/init/wakeup"
+      ],
+      "postrun": [
+        "./dist/hooks/postrun/cleanup"
       ]
     },
     "macos": {

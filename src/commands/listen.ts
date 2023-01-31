@@ -14,6 +14,7 @@ import {generateSDK} from '../util/graphql';
 import {upload} from '../util/sync';
 import {graphqlUrl, subscriptionUrl} from '../util/url';
 import {SettingSingleton} from '../config/setting';
+import { hasDisplay } from '../util/util';
 
 export default class Listen extends Command {
   static description = 'Realtime Syncing';
@@ -37,9 +38,17 @@ export default class Listen extends Command {
   }
 
   public async run(): Promise<void> {
+    if (!hasDisplay()) {
+      stdoutLogger.error(
+        'DISPLAY Environment Variable is undefined, "listen" command won\'t work on a computer or remote session with no DISPLAY (i.e. No Clipboard)',
+      );
+      return;
+    }
+
     // listen mode has to be online, have to have logged in with a password hash
     if (!this.auth.passwordHash) {
-      throw new Error('No Decryption Key Found, Please Login');
+      stdoutLogger.error('No Decryption Key Found, Please Login');
+      return;
     }
 
     const parsedAccessToken = this.auth.parsedAccessToken;
@@ -197,10 +206,9 @@ export default class Listen extends Command {
         },
       );
     });
-    syncPromise
-      .catch((error) => {
-        stderrLogger.error('Sync Promise Error');
-        console.error(error.error);
-      });
+    syncPromise.catch((error) => {
+      stderrLogger.error('Sync Promise Error');
+      console.error(error.error);
+    });
   }
 }

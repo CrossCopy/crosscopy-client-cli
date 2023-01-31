@@ -10,9 +10,9 @@ import clipboard from '@crosscopy/clipboard';
 import {v4 as uuidv4} from 'uuid';
 import {syncDownload} from '../util/sync';
 import {stderrLogger, stdoutLogger} from '../util/logger';
-import _ from 'lodash';
 import {Mode, SettingSingleton} from '../config/setting';
 import {graphqlUrl} from '../util/url';
+import {hasDisplay} from '../util/util';
 
 const {getSdk} = req;
 
@@ -47,81 +47,81 @@ export default class Sync extends Command {
         },
       },
     );
-    if (!this.auth.passwordHash)
+    if (!this.auth.passwordHash) {
       throw new Error('No Decryption Key Found, Please Login');
+    }
+
     const pluginManager = await generatePluginManager(this.auth.passwordHash);
     const lastRec = await dbService.selectLastRecord();
     let value: string;
     let contentType: RecordType;
-    if (flags.image) {
-      // clipboard image
-      contentType = RecordType.Text;
-      const imageBase64 = clipboard.readImageBase64Sync();
-      if (imageBase64.length === 0) {
-        stdoutLogger.warn('No Image In Clipboard, Skip');
-        return;
+
+    if (hasDisplay()) {
+      // read clipboard when there is DISPLAY
+      if (flags.image) {
+        // clipboard image
+        contentType = RecordType.Text;
+        const imageBase64 = clipboard.readImageBase64Sync();
+        if (imageBase64.length === 0) {
+          stderrLogger.warn('No Image In Clipboard, Skip');
+          return;
+        }
+
+        value = imageBase64;
+      } else {
+        // clipboard text
+        const cbStr = clipboard.readTextSync(); // current clipboard text
+        if (cbStr.length === 0) {
+          stderrLogger.warn('No Text In Clipboard, Skip');
+          return;
+        }
+
+        contentType = RecordType.Text;
+        if (!lastRec || (lastRec && lastRec.value !== cbStr)) {
+          stderrLogger.debug(`lastRec: ${lastRec?.value}`);
+        }
+
+        value = cbStr;
       }
 
-      value = imageBase64;
-    } else {
-      // clipboard text
-      const cbStr = clipboard.readTextSync(); // current clipboard text
-      if (cbStr.length === 0) {
-        stdoutLogger.warn('No Text In Clipboard, Skip');
-        return;
-      }
+      // check if content is already in local database
+      if (
+        lastRec &&
+        lastRec.type === contentType &&
+        lastRec.value.length === value.length &&
+        lastRec.value === value
+      ) {
+        // same content
+        stderrLogger.warn("Content is the Same, Won't Write Again");
+        if (this.setting.mode === Mode.offline) {
+          return;
+        }
+      } else {
+        // different clipboard content
+        // create a local record first
+        await dbService.createRec({
+          value: value,
+          uuid: uuidv4(),
+          device: await this.setting.device,
+          profile: await this.setting.profile,
+          type: contentType,
+        });
 
-      contentType = RecordType.Text;
-      if (!lastRec || (lastRec && lastRec.value !== cbStr)) {
-        stdoutLogger.debug(`lastRec: ${lastRec?.value}`);
-      }
-
-      value = cbStr;
-      // syncUpload(req.RecordType.Text, )
-    }
-
-    // check if content is already in local database
-
-    if (
-      lastRec &&
-      lastRec.type === contentType &&
-      lastRec.value.length === value.length &&
-      lastRec.value === value
-    ) {
-      // same content
-      stdoutLogger.warn("Content is the Same, Won't Write Again");
-      if (this.setting.mode === Mode.offline) {
-        return;
-      }
-
-      // if (this.setting.mode === Mode.online && lastRec.insync) {
-      //   stdoutLogger.warn('Clipboard is in sync with cloud');
-      //   return;
-      // }
-    } else {
-      // different clipboar content
-      // continue
-      await dbService.createRec({
-        value: value,
-        uuid: uuidv4(),
-        device: await this.setting.device,
-        profile: await this.setting.profile,
-        type: contentType,
-      });
-
-      if (this.setting.mode === Mode.offline) {
-        stdoutLogger.warn(
-          "New Clipboard Content Written to Local Database.\nOffline Mode, Won't Sync with Cloud",
-        );
-        return;
+        if (this.setting.mode === Mode.offline) {
+          stderrLogger.warn(
+            "New Clipboard Content Written to Local Database.\nOffline Mode, Won't Sync with Cloud",
+          );
+          return;
+        }
       }
     }
 
     if (this.setting.mode !== Mode.online) {
       // this is a guard
-      throw new Error(
+      stderrLogger.error(
         'Not In Online Mode, And Code is not Suppose to Reach Here.',
       );
+      return;
     }
 
     const notSyncedRecords = await dbService.selectNotSyncedRecords();
@@ -167,7 +167,11 @@ export default class Sync extends Command {
       syncResponse.syncByLatestCreationTime as req.SyncByLatestCreationTimeResponse;
     const {newRecords, idMapping, deletedRecInfo} = res;
 
-    if (!this.setting.dbPath) throw new Error('DB Path not defined');
+    if (!this.setting.dbPath) {
+      stderrLogger.error('DB Path not defined');
+      return;
+    }
+
     await syncDownload(
       idMapping,
       newRecords,

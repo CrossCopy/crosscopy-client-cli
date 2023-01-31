@@ -15,7 +15,7 @@ const {getTextPayload} = plugin;
 const {getSdk} = req;
 import {GraphQLClient} from 'graphql-request';
 import {SettingConfig, AuthConfig} from '../config';
-import {stdoutLogger} from '../util/logger';
+import {stderrLogger, stdoutLogger} from '../util/logger';
 
 export default class Login extends Command {
   static description = 'Login to CrossCopy Cloud';
@@ -55,12 +55,18 @@ export default class Login extends Command {
       await inquirer.prompt(prompts);
     const email = flags.email || responses.email;
     const password = flags.password || responses.password;
-    if (!email || !password) throw new Error('Email and Password not defined');
+    if (!email || !password) {
+      stderrLogger.error('Email or Password not defined');
+      return;
+    }
 
     // clear database
     const dbService = db.DBService.instance;
-    if (!this.setting.dbPath) throw new Error('DB Path not defined');
-    console.log(this.setting.dbPath);
+    if (!this.setting.dbPath) {
+      stderrLogger.error('DB Path not defined');
+      return;
+    }
+
     await dbService.init(this.setting.dbPath);
     this.log('Clear Old Database Data');
 
@@ -68,8 +74,11 @@ export default class Login extends Command {
     sdk
       .login({email, password})
       .then(async (res) => {
-        if (!res.login)
-          throw new Error('Unexpected Error, wrong login response');
+        if (!res.login) {
+          stderrLogger.error('Unexpected Error, wrong login response');
+          return;
+        }
+
         this.auth.accessToken = res.login.accessToken;
         if (res.login.refreshToken) {
           this.auth.refreshToken = res.login.refreshToken;

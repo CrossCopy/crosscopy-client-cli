@@ -1,5 +1,5 @@
 import {Command, Flags} from '@oclif/core';
-import {DBService} from '@crosscopy/core/database';
+import {DBService, Rec} from '@crosscopy/core/database';
 import {SettingConfig} from '../config';
 
 export default class View extends Command {
@@ -15,11 +15,15 @@ export default class View extends Command {
       default: false,
     }),
 
-    id: Flags.boolean({
-      description:
-        'Display database (takes more space, but could be used to delete records)',
-      default: false,
+    num: Flags.integer({
+      char: 'n',
+      description: 'Number of records to display',
     }),
+    // id: Flags.boolean({
+    //   description:
+    //     'Display database (takes more space, but could be used to delete records)',
+    //   default: false,
+    // }),
   };
 
   public async run(): Promise<void> {
@@ -27,11 +31,20 @@ export default class View extends Command {
     const dbService = DBService.instance;
     if (!this.setting.dbPath) throw new Error('DB Path not defined');
     await dbService.init(this.setting.dbPath);
-
-    const [allRecords, count] = await dbService.RecRepo.findAndCount({
-      select: ['id', 'uuid', 'createdAt', 'type', 'value', 'insync'],
-      order: {createdAt: 'DESC'},
-    });
+    let allRecords: Rec[];
+    let count: number;
+    if (flags.num) {
+      [allRecords, count] = await dbService.RecRepo.findAndCount({
+        select: ['id', 'uuid', 'createdAt', 'type', 'value', 'insync'],
+        order: {createdAt: 'DESC'},
+        take: flags.num,
+      });
+    } else {
+      [allRecords, count] = await dbService.RecRepo.findAndCount({
+        select: ['id', 'uuid', 'createdAt', 'type', 'value', 'insync'],
+        order: {createdAt: 'DESC'},
+      });
+    }
 
     type DisplayTableCols = {
       Online: boolean;
@@ -54,10 +67,8 @@ export default class View extends Command {
       }
     }
 
-    if (flags.id) {
-      for (const [idx, r] of allRecords.entries()) {
-        displayRecords[idx].id = r.id;
-      }
+    for (const [idx, r] of allRecords.entries()) {
+      displayRecords[idx].id = r.id;
     }
 
     this.log(`${count} records found`);
