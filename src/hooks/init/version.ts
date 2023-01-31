@@ -15,7 +15,7 @@ const hook: Hook<'init'> = async function () {
         return;
       }
 
-      if (lastestVersion === curVersion) {
+      if (lastestVersion !== curVersion) {
         stdoutLogger.warn(
           `Current version: ${curVersion}, latest version: ${lastestVersion}. Consider upgrading with`,
         );
