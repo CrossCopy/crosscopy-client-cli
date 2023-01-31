@@ -1,4 +1,4 @@
-import {Command, Flags} from '@oclif/core';
+import {Command} from '@oclif/core';
 
 export default class Exp extends Command {
   static description = 'describe the command here';
@@ -7,9 +7,14 @@ export default class Exp extends Command {
 
   static flags = {};
 
-  static args = [{name: 'file'}];
+  static args = [];
 
   public async run(): Promise<void> {
-    console.log(process.env.DISPLAY);
+    // console.log(process.env.DISPLAY);
+    // import boxen from 'boxen';
+    // const boxen = await import('boxen');
+    // const boxen = require('boxen/index');
+    // console.log(boxen);
+    // console.log(boxen('unicorn', {padding: 1}));
   }
 }
