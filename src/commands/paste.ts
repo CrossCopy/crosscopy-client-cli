@@ -35,6 +35,7 @@ export default class Paste extends Command {
       default: false,
     }),
     imageFile: Flags.string({
+      char: 'f',
       description: 'Output to image file, only ends with .png',
     }),
   };
