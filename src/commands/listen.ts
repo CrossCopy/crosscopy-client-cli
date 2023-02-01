@@ -39,10 +39,10 @@ export default class Listen extends Command {
 
   public async run(): Promise<void> {
     if (!hasClipboard()) {
-      stdoutLogger.error(
-        'Clipboard not available in ssh or when no display, "listen" command won\'t work on a computer or remote session with no DISPLAY (i.e. No Clipboard)',
+      stdoutLogger.warn(
+        "Clipboard not available in ssh or when no display, clipboard won't work, but data will be synced",
       );
-      return;
+      // return;
     }
 
     // listen mode has to be online, have to have logged in with a password hash
@@ -73,45 +73,48 @@ export default class Listen extends Command {
     const device = await this.setting.device;
     const profile = await this.setting.profile;
 
-    clipboard.on('text', async (data) => {
-      // TODO: consider extract a helper sync function in sync command and pass data in
-      stdoutLogger.info('text updated');
-      const lastRec = await dbService.selectLastRecord();
-      if (!lastRec || lastRec.value !== data) {
-        const recToCreate = {
-          id: undefined,
-          uuid: uuidv4(),
-          device: device,
-          profile: profile,
-          type: RecordType.Text,
-          value: data,
-        };
-        dbService.createRec(recToCreate);
-        upload(recToCreate, pluginManager, sdk);
-      }
-    });
-    clipboard.on('image', async (data) => {
-      const lastRec = await dbService.selectLastRecord();
-      const base64Img = data.toString('base64');
-      if (!lastRec || lastRec.value !== base64Img) {
-        // TODO: upload image to cloud
-        stdoutLogger.info('Clipboard Image Updated, upload');
-        // expect data image buffer, encode it to base64 and upload
-        // fs.writeFileSync('test.png', data);
-        const recToCreate = {
-          id: undefined,
-          uuid: uuidv4(),
-          device: device,
-          profile: profile,
-          type: RecordType.Image,
-          value: base64Img, // Buffer is pure image buffer, encode to base64 and transfer
-        };
-        dbService.createRec(recToCreate);
-        upload(recToCreate, pluginManager, sdk);
-      }
-    });
-    clipboard.listen();
-    stdoutLogger.info('Starting Listening for Clipboard Updates');
+    if (hasClipboard()) {
+      clipboard.on('text', async (data) => {
+        // TODO: consider extract a helper sync function in sync command and pass data in
+        stdoutLogger.info('text updated');
+        const lastRec = await dbService.selectLastRecord();
+        if (!lastRec || lastRec.value !== data) {
+          const recToCreate = {
+            id: undefined,
+            uuid: uuidv4(),
+            device: device,
+            profile: profile,
+            type: RecordType.Text,
+            value: data,
+          };
+          dbService.createRec(recToCreate);
+          upload(recToCreate, pluginManager, sdk);
+        }
+      });
+      clipboard.on('image', async (data) => {
+        const lastRec = await dbService.selectLastRecord();
+        const base64Img = data.toString('base64');
+        if (!lastRec || lastRec.value !== base64Img) {
+          // TODO: upload image to cloud
+          stdoutLogger.info('Clipboard Image Updated, upload');
+          // expect data image buffer, encode it to base64 and upload
+          // fs.writeFileSync('test.png', data);
+          const recToCreate = {
+            id: undefined,
+            uuid: uuidv4(),
+            device: device,
+            profile: profile,
+            type: RecordType.Image,
+            value: base64Img, // Buffer is pure image buffer, encode to base64 and transfer
+          };
+          dbService.createRec(recToCreate);
+          upload(recToCreate, pluginManager, sdk);
+        }
+      });
+      clipboard.listen();
+      stdoutLogger.info('Starting Listening for Clipboard Updates');
+    }
+
     const accessToken = this.auth.accessToken;
     if (!accessToken) throw new Error('No Access Token');
     // Reference: https://www.npmjs.com/package/graphql-ws
@@ -167,10 +170,14 @@ export default class Listen extends Command {
       // eslint-disable-next-line unicorn/consistent-destructuring
       if (rec.type === req.RecordType.Text) {
         stdoutLogger.debug('Writing Text to Clipboard');
-        clipboard.writeTextSync(payload.content);
+        if (hasClipboard()) {
+          clipboard.writeTextSync(payload.content);
+        }
       } else if (rec.type === req.RecordType.Image) {
         stdoutLogger.debug('Writing Image to Clipboard');
-        clipboard.writeImageSync(payload.content);
+        if (hasClipboard()) {
+          clipboard.writeImageSync(payload.content);
+        }
       }
     };
 
@@ -207,8 +214,8 @@ export default class Listen extends Command {
       );
     });
     syncPromise.catch((error) => {
-      stderrLogger.error('Sync Promise Error');
-      console.error(error.error);
+      stderrLogger.error('Sync Promise Error, Try to login again');
+      console.error(error);
     });
   }
 }
