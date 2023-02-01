@@ -4,7 +4,7 @@ import {getPayload, PluginManager} from '@crosscopy/core/plugin';
 import {stderrLogger, stdoutLogger} from './logger';
 import bytes from 'bytes';
 import {reject} from 'lodash';
-import {hasDisplay} from './util';
+import {hasClipboard} from './util';
 import {writeToClipboard} from './clipboard';
 
 /**
@@ -82,9 +82,9 @@ export const syncDownload = async (
   );
 
   // write latest record to clipboard
-  if (!hasDisplay()) {
+  if (!hasClipboard()) {
     stderrLogger.warn(
-      'No DISPLAY, Will not write latest synced record to clipboard',
+      'Clipboard not available in ssh or when no display, will not write latest synced record to clipboard',
     );
     return;
   }

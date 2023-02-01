@@ -14,7 +14,7 @@ import {generateSDK} from '../util/graphql';
 import {upload} from '../util/sync';
 import {graphqlUrl, subscriptionUrl} from '../util/url';
 import {SettingSingleton} from '../config/setting';
-import { hasDisplay } from '../util/util';
+import {hasClipboard} from '../util/util';
 
 export default class Listen extends Command {
   static description = 'Realtime Syncing';
@@ -38,9 +38,9 @@ export default class Listen extends Command {
   }
 
   public async run(): Promise<void> {
-    if (!hasDisplay()) {
+    if (!hasClipboard()) {
       stdoutLogger.error(
-        'DISPLAY Environment Variable is undefined, "listen" command won\'t work on a computer or remote session with no DISPLAY (i.e. No Clipboard)',
+        'Clipboard not available in ssh or when no display, "listen" command won\'t work on a computer or remote session with no DISPLAY (i.e. No Clipboard)',
       );
       return;
     }

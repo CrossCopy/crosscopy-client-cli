@@ -12,7 +12,7 @@ import {syncDownload} from '../util/sync';
 import {stderrLogger, stdoutLogger} from '../util/logger';
 import {Mode, SettingSingleton} from '../config/setting';
 import {graphqlUrl} from '../util/url';
-import {hasDisplay} from '../util/util';
+import {hasClipboard} from '../util/util';
 
 const {getSdk} = req;
 
@@ -56,7 +56,7 @@ export default class Sync extends Command {
     let value: string;
     let contentType: RecordType;
 
-    if (hasDisplay()) {
+    if (hasClipboard()) {
       // read clipboard when there is DISPLAY
       if (flags.image) {
         // clipboard image
