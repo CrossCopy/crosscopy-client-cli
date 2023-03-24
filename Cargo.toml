@@ -7,3 +7,7 @@ edition = "2021"
 
 [dependencies]
 clap = { version = "4.1.13", features = ["derive", "cargo"] }
+
+[[bin]]
+name = "xc"
+path = "src/main.rs"
