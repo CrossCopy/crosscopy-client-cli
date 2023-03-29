@@ -1,8 +1,14 @@
 use std::path::PathBuf;
-
+// mod commands::login;
+// use commands::login::LoginArgs;
+mod commands;
 use clap::{arg, command, value_parser, Arg, ArgAction, Command};
 
 fn main() {
+    let x = commands::login::LoginArgs {
+        email: String::from("huakun.shen@gmail.com"),
+        password: String::from("pass"),
+    };
     // Ref: https://docs.rs/clap/latest/clap/_tutorial/index.html
     let matches = command!() // requires `cargo` feature
         .arg(arg!(-d --debug "Debug Mode").action(ArgAction::SetTrue))
