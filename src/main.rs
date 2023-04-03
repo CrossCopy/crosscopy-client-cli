@@ -1,97 +1,102 @@
-use std::path::PathBuf;
-// mod commands::login;
-// use commands::login::LoginArgs;
+// See https://docs.rs/clap/latest/clap/_derive/_tutorial/index.html
+#![allow(unused_variables)]
+
+mod argparse;
 mod commands;
-use clap::{arg, command, value_parser, Arg, ArgAction, Command};
+pub mod types;
+
+use clap::Parser;
+
+#[macro_use]
+extern crate serde_derive;
+
+use crate::argparse::configuration::context::{Context, ContextInitParams};
+use crate::commands::types::CommandName;
+use argparse::definition::{SettingCommands, SettingServerCommands, XCArgs, XCCommands};
+use argparse::parser::{LoginParser, SettingParser};
 
 fn main() {
-    let x = commands::login::LoginArgs {
-        email: String::from("huakun.shen@gmail.com"),
-        password: String::from("pass"),
-    };
-    // Ref: https://docs.rs/clap/latest/clap/_tutorial/index.html
-    let matches = command!() // requires `cargo` feature
-        .arg(arg!(-d --debug "Debug Mode").action(ArgAction::SetTrue))
-        .arg(
-            Arg::new("verbose")
-                .short('v')
-                .long("verbose")
-                .action(ArgAction::Count),
-        )
-        .subcommand(Command::new("register").about("Register a new account"))
-        .subcommand(Command::new("login").about("Login"))
-        .subcommand(Command::new("logout").about("Logout"))
-        .subcommand(
-            Command::new("setting").about("App Setting").subcommand(
-                Command::new("server")
-                    .about("Multi-Server Setting")
-                    .subcommand(Command::new("list").about("List all server profiles"))
-                    .subcommand(Command::new("add").about("Add new server profile"))
-                    .subcommand(Command::new("select").about("Select server profile"))
-                    .subcommand(Command::new("delete").about("Delete server profile")),
-            ),
-        )
-        .subcommand(Command::new("listen").about("Realtime syncing clipboard with other devices"))
-        .subcommand(Command::new("sync").about("Sync clipboard Data"))
-        .subcommand(Command::new("copy").about("Copy input data to clipboard"))
-        .subcommand(
-            Command::new("paste")
-                .about("Output clipboard data")
-                .arg(
-                    arg!(
-                        -f --file <FILE> "File path to save"
-                    )
-                    // We don't have syntax yet for optional options, so manually calling `required`
-                    .required(false)
-                    .value_parser(value_parser!(PathBuf)),
-                )
-                .arg(arg!(--id <VALUE> "Index of clipboard item").required(false)), // TODO: this has to be an integer, check how to parse int,
-        )
-        .subcommand(Command::new("search").about("Search for clipboard data"))
-        .subcommand(
-            Command::new("view")
-                .about("View clipboard content")
-                .arg(arg!(--text).action(ArgAction::SetTrue))
-                .arg(arg!(--image).action(ArgAction::SetTrue)),
-        )
-        .get_matches();
+    let mut ctx = Context::default();
+    let args = XCArgs::parse();
 
-    if let Some(matches) = matches.subcommand_matches("paste") {
-        if let Some(config_path) = matches.get_one::<PathBuf>("file") {
-            println!("Filename: {}", config_path.display());
-        } else {
-            println!("No Filename Given");
-            println!(
-                "id: {:?}",
-                matches.get_one::<String>("id").expect("required")
-            );
+    match args.debug {
+        n if n > 2 => ctx.debug_level = 2,
+        n => ctx.debug_level = n,
+    }
+
+    match args.verbose {
+        n if n > 2 => ctx.verbose_level = 2,
+        n => ctx.verbose_level = n,
+    }
+
+    
+
+    match &args.command {
+        XCCommands::Register { email, password } => {
+            ctx.cmd_name = CommandName::Register;
+        }
+        XCCommands::Login { email, password } => {
+            ctx.cmd_name = CommandName::Login;
+            match email {
+                Some(email) => println!("Email: {}", email),
+                None => println!("No Email"),
+            };
+
+            match password {
+                Some(password) => println!("Password: {}", password),
+                None => println!("No Password"),
+            }
+        }
+        XCCommands::Setting { command } => {
+            ctx.cmd_name = CommandName::Setting;
+            SettingParser::parse_setting_command(&command)
+        }
+        XCCommands::Logout {} => {
+            ctx.cmd_name = CommandName::Logout;
+        }
+        XCCommands::Listen {} => {
+            ctx.cmd_name = CommandName::Listen;
+        }
+        XCCommands::Sync {} => {
+            ctx.cmd_name = CommandName::Sync;
+        }
+        XCCommands::Copy {
+            image_file,
+            text_file,
+        } => {
+            ctx.cmd_name = CommandName::Copy;
+        }
+        XCCommands::Paste {
+            file,
+            id,
+            clipboard,
+        } => {
+            ctx.cmd_name = CommandName::Paste;
+        }
+        XCCommands::Search { keywords } => {
+            ctx.cmd_name = CommandName::Search;
+        }
+        XCCommands::View {
+            text,
+            image,
+            number,
+        } => {
+            ctx.cmd_name = CommandName::View;
         }
     }
 
-    match matches
-        .get_one::<u8>("verbose")
-        .expect("Count's are defaulted")
-    {
-        0 => println!("Verbose mode is off"),
-        1 => println!("Verbose mode is kind of on"),
-        2 => println!("Verbose mode is on"),
-        _ => println!("Don't be crazy"),
+    let mut ctx_init_params = ContextInitParams::default();
+
+
+    if let Some(config_dir) = args.config_dir {
+        ctx_init_params.config_dir = config_dir;
     }
 
-    let debug = matches.get_flag("debug");
-    match debug.clone() {
-        true => println!("Debug Mode is On"),
-        false => println!("Debug Mode is Off"),
+    if let Some(data_dir) = args.data_dir {
+        ctx_init_params.data_dir = data_dir;
     }
-    println!("Debug Mode: {}", debug);
 
-    if let Some(matches) = matches.subcommand_matches("view") {
-        // "$ myapp test" was run
-        if matches.get_flag("text") {
-            // "$ myapp test -l" was run
-            println!("text only");
-        } else {
-            println!("not text only");
-        }
-    }
+
+    ctx.init(Some(&ctx_init_params)).validate();
+    println!("{:?}", ctx);
 }
