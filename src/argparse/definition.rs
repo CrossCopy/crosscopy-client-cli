@@ -33,12 +33,17 @@ pub enum XCCommands {
     /// Save content to Clipboard (support stdin for text format)
     Copy {
         // by default, copy command will read from stdin for content piped into crosscopy
-        #[arg(short, long, help = "Image path, will be written to clipboard as image")]
+        #[arg(long, help = "Image path, will be written to clipboard as image")]
         image_file: Option<PathBuf>,
 
-        #[arg(short, long, help = "Text File path (No Binary)")]
+        #[arg(long, help = "Text File path (No Binary)")]
         text_file: Option<PathBuf>,
 
+        #[arg(long, help = "Use a Text Editor UI")]
+        text_editor: bool,
+
+        #[arg(long, help = "Image is piped in from stdin")]
+        image_stdin: bool,
         // TODO: May support this in future, we only have text and image type for now
         // #[arg(short, long, help = "File to save content to")]
         // binary_file: Option<PathBuf>,

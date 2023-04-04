@@ -18,3 +18,8 @@ impl Default for CommandName {
         CommandName::Default
     }
 }
+
+/// Command handler
+pub trait Service {
+    fn run(&self);
+}

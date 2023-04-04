@@ -1,5 +1,5 @@
 // refer to https://oclif.io/docs/config
-use crate::commands::types::CommandName;
+use crate::services::types::CommandName;
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::process;
