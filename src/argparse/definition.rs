@@ -1,7 +1,10 @@
-use clap::{Parser, Subcommand};
+// See https://docs.rs/clap/latest/clap/_derive/_tutorial/index.html
+use clap::{Parser, Subcommand, Command};
+use clap_complete::{generate, Generator, Shell};
 use std::path::PathBuf;
+use std::io;
 
-#[derive(Subcommand, Debug)]
+#[derive(Subcommand, Debug, PartialEq)]
 pub enum XCCommands {
     /// Register a new account
     Register {
@@ -76,9 +79,13 @@ pub enum XCCommands {
         #[arg(short, long, help = "Limit number of records to display")]
         number: u32,
     },
+    GenerateCompletion {
+        #[arg(long, value_enum)]
+        shell: Shell,
+    },
 }
 
-#[derive(Subcommand, Debug)]
+#[derive(Subcommand, Debug, PartialEq)]
 pub enum SettingServerCommands {
     List {},
     Add {},
@@ -86,18 +93,18 @@ pub enum SettingServerCommands {
     Delete {},
 }
 
-#[derive(Debug, Parser)]
+#[derive(Debug, Parser, PartialEq)]
 pub struct SettingServerArgs {
     #[command(subcommand)]
     pub command: SettingServerCommands,
 }
 
-#[derive(Subcommand, Debug)]
+#[derive(Subcommand, Debug, PartialEq)]
 pub enum SettingCommands {
     Server(SettingServerArgs),
 }
 
-#[derive(Parser, Debug)]
+#[derive(Parser, Debug, PartialEq)]
 #[command(author, version, about, long_about = None, next_line_help = false)]
 pub struct XCArgs {
     #[command(subcommand)]
@@ -115,5 +122,11 @@ pub struct XCArgs {
 
     /// custom data path
     pub data_dir: Option<PathBuf>,
+}
 
+
+/// Generate shell completion script
+/// Reference: https://github.com/clap-rs/clap/blob/master/clap_complete/examples/completion-derive.rs
+pub fn print_completions<G: Generator>(gen: G, cmd: &mut Command) {
+    generate(gen, cmd, cmd.get_name().to_string(), &mut io::stdout());
 }

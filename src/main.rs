@@ -1,35 +1,32 @@
-// See https://docs.rs/clap/latest/clap/_derive/_tutorial/index.html
 #![allow(unused_variables)]
 
 #[macro_use]
 extern crate serde_derive;
-
-use std::io;
-use std::io::{stdin, stdout, Write};
-
-use atty::Stream;
-use clap::Parser;
-
 extern crate termion;
-
+use std::io::{stdout, Write};
+use atty::Stream;
 use termion::{color, style};
-
-
-use argparse::definition::{SettingCommands, SettingServerCommands, XCArgs, XCCommands};
-use argparse::parser::{LoginParser, SettingParser};
-
-use crate::argparse::configuration::context::{Context, ContextInitParams};
-use crate::argparse::stdin_reader;
-use crate::services::listen::ListenService;
-use crate::services::login::LoginService;
-use crate::services::register::RegisterService;
-use crate::services::types::{CommandName, Service};
-use crate::utils::exp::start_variable_height_editor;
+use clap::{CommandFactory, Parser};
 
 mod argparse;
 mod services;
 mod types;
 mod utils;
+
+use argparse::definition::{XCArgs, XCCommands, print_completions};
+use argparse::parser::{LoginParser, SettingParser};
+use argparse::configuration::context::{Context, ContextInitParams};
+use argparse::stdin_reader;
+use services::listen::ListenService;
+use services::login::LoginService;
+use services::register::RegisterService;
+use services::types::{CommandName, Service};
+use utils::exp::start_variable_height_editor;
+
+
+
+
+
 
 fn main() {
     let mut ctx = Context::default();
@@ -139,6 +136,12 @@ fn main() {
         } => {
             ctx.cmd_name = CommandName::View;
         }
+        XCCommands::GenerateCompletion {
+            shell
+        } => {
+            let mut cmd = XCArgs::command();
+            print_completions(*shell, &mut cmd);
+        }
     }
 
     let mut ctx_init_params = ContextInitParams::default();
@@ -152,5 +155,4 @@ fn main() {
     }
 
     ctx.init(Some(&ctx_init_params)).validate();
-    // println!("{:?}", ctx);
 }
