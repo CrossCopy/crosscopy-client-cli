@@ -19,7 +19,7 @@ pub fn validate_password(password: &str) -> Result<(), Error> {
             ErrorKind::InvalidInput,
             "Password must be longer than 8 characters.",
         ))
-    } else if (!re.is_match(password)) {
+    } else if !re.is_match(password) {
         Err(Error::new(
             ErrorKind::InvalidInput,
             "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.",

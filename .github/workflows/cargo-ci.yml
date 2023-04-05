@@ -10,12 +10,16 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build:
+  build-test:
 
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v3
+    - name: Install OS Dependencies
+      run: |
+        apt-get install libxcb-xfixes0-dev
+        apt-get install libxcb-shape0-dev
     - name: Build
       run: cargo build --verbose
     - name: Run tests
