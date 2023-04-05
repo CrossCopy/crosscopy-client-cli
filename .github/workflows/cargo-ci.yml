@@ -2,7 +2,7 @@ name: Cargo Build & Test
 
 on:
   push:
-    branches: [ "main", "clap-setup" ]
+    branches: [ "main", "rs/*" ]
   pull_request:
     branches: [ "main" ]
 
