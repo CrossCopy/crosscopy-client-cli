@@ -2,15 +2,14 @@
 use std::path::PathBuf;
 
 
-
 pub struct LoginArgs {
-    email: String,
-    password: String,
+    pub email: String,
+    pub password: String,
 }
 
 pub struct RegisterArgs {
-    email: String,
-    password: String,
+    pub email: String,
+    pub password: String,
 }
 
 pub struct SettingArgs {}
@@ -21,30 +20,33 @@ pub struct ListenArgs {}
 
 pub struct SyncArgs {}
 
+#[derive(PartialEq, Debug)]
 pub enum CopyMode {
     TextFile,
     ImageFile,
-    Stdin
+    ImageStdin,
+    TextStdin,
+    TextEditor, // I may remove this, this is just for fun
 }
 
 pub struct CopyArgs {
-    mode: CopyMode,
+    pub mode: CopyMode,
     /// is none is CopyMode is stdin
-    path: Option<PathBuf>
+    pub path: Option<PathBuf>,
 }
 
 pub struct PasteArgs {
-    clipboard: bool,
-    file_path: Option<PathBuf>,
+    pub clipboard: bool,
+    pub file_path: Option<PathBuf>,
     /// id is not u32 because we need to use -1 to represent the latest record
-    id: i32,
+    pub id: i32,
 }
 
 pub struct SearchArgs {
     keywords: String,
 }
 
-pub struct View {
+pub struct ViewArgs {
     text: bool,
     image: bool,
     number: u32,

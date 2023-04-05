@@ -1,3 +1,5 @@
+use crate::argparse::configuration::context::Context;
+
 #[derive(Debug)]
 pub enum CommandName {
     Login,
@@ -21,5 +23,5 @@ impl Default for CommandName {
 
 /// Command handler
 pub trait Service {
-    fn run(&self);
+    fn run(&self, ctx: &Context);
 }

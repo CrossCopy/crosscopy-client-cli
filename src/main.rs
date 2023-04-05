@@ -3,10 +3,9 @@
 #[macro_use]
 extern crate serde_derive;
 extern crate termion;
-use std::io::{stdout, Write};
-use atty::Stream;
-use termion::{color, style};
+
 use clap::{CommandFactory, Parser};
+use std::{process};
 
 mod argparse;
 mod services;
@@ -14,18 +13,14 @@ mod types;
 mod utils;
 
 use argparse::definition::{XCArgs, XCCommands, print_completions};
-use argparse::parser::{LoginParser, SettingParser};
+use argparse::parser::{LoginParser, SettingParser, CopyParser};
 use argparse::configuration::context::{Context, ContextInitParams};
-use argparse::stdin_reader;
 use services::listen::ListenService;
 use services::login::LoginService;
 use services::register::RegisterService;
 use services::types::{CommandName, Service};
-use utils::exp::start_variable_height_editor;
-
-
-
-
+use services::copy::CopyService;
+use crate::argparse::parser::RegisterParser;
 
 
 fn main() {
@@ -46,24 +41,15 @@ fn main() {
     match &args.command {
         XCCommands::Register { email, password } => {
             ctx.cmd_name = CommandName::Register;
-            let register_service = RegisterService {
-                email: String::from(""),
-                password: String::from(""),
-            };
-            register_service.run();
+            let register_args = RegisterParser::parse(email, password);
+            let register_service = RegisterService { args: register_args };
+            register_service.run(&ctx);
         }
         XCCommands::Login { email, password } => {
             ctx.cmd_name = CommandName::Login;
-            let e = LoginParser::parse_email(email);
-            let e = String::from("email");
-            let p = LoginParser::parse_password(password);
-            println!("pass: {p}");
-
-            let login_service = LoginService {
-                email: e,
-                password: p,
-            };
-            login_service.run();
+            let login_args = LoginParser::parse(email, password);
+            let login_service = LoginService { args: login_args };
+            login_service.run(&ctx);
         }
         XCCommands::Setting { command } => {
             ctx.cmd_name = CommandName::Setting;
@@ -75,8 +61,7 @@ fn main() {
         XCCommands::Listen {} => {
             ctx.cmd_name = CommandName::Listen;
             let listen_service = ListenService {};
-            println!("{:?}", listen_service);
-            listen_service.run();
+            listen_service.run(&ctx);
         }
         XCCommands::Sync {} => {
             ctx.cmd_name = CommandName::Sync;
@@ -88,36 +73,9 @@ fn main() {
             image_stdin
         } => {
             ctx.cmd_name = CommandName::Copy;
-            if atty::is(Stream::Stdin) {
-                if *text_editor {
-                    let lines = start_variable_height_editor();
-                    match lines {
-                        Ok(lines) => {
-                            // println!("lines: {:?}", lines);
-                            let joined_lines = lines.join("\n");
-                            println!("{}", joined_lines);
-                        }
-                        Err(err) => {
-                            eprintln!("{}", err);
-                        }
-                    };
-                } else {
-                    let prompt = "Enter Text Below, and press Ctrl + D to finish";
-                    println!("{}{prompt}", color::Fg(color::Blue));
-                    println!("{}{}", "=".repeat(prompt.len()), style::Reset);
-                    let stdin_bytes = stdin_reader::read_buffer_from_stdin();
-                    let stdin_text = String::from_utf8(stdin_bytes.clone()).expect("Invalid UTF-8");
-
-                    println!("{}{}{}", color::Fg(color::Blue), "=".repeat(prompt.len()), style::Reset);
-
-                    println!("{}{}{}", color::Fg(color::LightGreen), stdin_text, style::Reset);
-                    // stdout().write_all(&stdin_bytes).unwrap(); // you can `cat img.png | xc copy` with this
-                }
-            } else {
-                let stdin_bytes = stdin_reader::read_buffer_from_stdin();
-                let stdin_text = String::from_utf8(stdin_bytes.clone()).expect("Invalid UTF-8");
-                stdout().write_all(&stdin_bytes).unwrap(); // you can `cat img.png | xc copy` with this
-            }
+            let copy_args = CopyParser::parse(image_file, text_file, text_editor, image_stdin);
+            let copy_service = CopyService { args: copy_args };
+            copy_service.run(&ctx);
         }
         XCCommands::Paste {
             file,

@@ -13,3 +13,5 @@ mod copy;
 // We also import the parser structs so that it's easier to import
 pub use setting::SettingParser;
 pub use login::LoginParser;
+pub use copy::CopyParser;
+pub use register::RegisterParser;
