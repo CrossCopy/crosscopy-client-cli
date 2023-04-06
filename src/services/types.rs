@@ -1,4 +1,5 @@
 use crate::argparse::configuration::context::Context;
+use crate::types::args::ServiceArgs;
 
 #[derive(Debug)]
 pub enum CommandName {
@@ -23,5 +24,7 @@ impl Default for CommandName {
 
 /// Command handler
 pub trait Service {
+    fn args(&self) -> &dyn ServiceArgs;
     fn run(&self, ctx: &Context);
+    // fn name(&self) -> &str;
 }

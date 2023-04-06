@@ -1,4 +1,5 @@
 use crate::services::types::Service;
+use atty;
 use atty::Stream;
 use termion::{color, style};
 use std::io::{stdout, Write};
@@ -7,7 +8,7 @@ use std::process;
 use crate::argparse::configuration::context::Context;
 
 use crate::argparse::stdin_reader;
-use crate::types::args::{CopyArgs, CopyMode};
+use crate::types::args::{CopyArgs, CopyMode, ServiceArgs};
 use crate::utils::exp::start_variable_height_editor;
 
 pub struct CopyService {
@@ -15,6 +16,9 @@ pub struct CopyService {
 }
 
 impl Service for CopyService {
+    fn args(&self) -> &dyn ServiceArgs {
+        &self.args
+    }
     fn run(&self, ctx: &Context) {
         if atty::is(Stream::Stdin) {
             if self.args.mode == CopyMode::TextEditor {

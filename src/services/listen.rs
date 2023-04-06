@@ -5,6 +5,7 @@ use clipboard_master::{Master, ClipboardHandler, CallbackResult};
 
 use std::io;
 use crate::argparse::configuration::context::Context;
+use crate::types::args::{ListenArgs, ServiceArgs};
 
 struct Handler;
 
@@ -20,11 +21,15 @@ impl ClipboardHandler for Handler {
     }
 }
 
-#[derive(Debug)]
-pub struct ListenService {}
+pub struct ListenService {
+    pub args: ListenArgs,
+}
 
 
 impl Service for ListenService {
+    fn args(&self) -> &dyn ServiceArgs {
+        &self.args
+    }
     fn run(&self, ctx: &Context) {
         println!("Listening for clipboard update");
         let thread_handle = thread::spawn(move || {

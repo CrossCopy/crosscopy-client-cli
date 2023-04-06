@@ -21,6 +21,7 @@ use services::register::RegisterService;
 use services::types::{CommandName, Service};
 use services::copy::CopyService;
 use crate::argparse::parser::RegisterParser;
+use crate::types::args::ListenArgs;
 
 
 fn main() {
@@ -60,7 +61,7 @@ fn main() {
         }
         XCCommands::Listen {} => {
             ctx.cmd_name = CommandName::Listen;
-            let listen_service = ListenService {};
+            let listen_service = ListenService { args: ListenArgs {} };
             listen_service.run(&ctx);
         }
         XCCommands::Sync {} => {

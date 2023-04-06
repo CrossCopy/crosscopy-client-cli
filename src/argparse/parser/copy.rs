@@ -1,5 +1,5 @@
 use std::{error::Error, path::PathBuf, process};
-use crate::types::args::{CopyArgs, CopyMode};
+use crate::types::args::{CopyArgs, CopyMode, ServiceArgs};
 
 pub struct CopyParser {}
 
@@ -61,6 +61,6 @@ impl CopyParser {
         } else {
             mode = CopyMode::TextStdin;
         }
-        CopyArgs { mode: CopyMode::TextFile, path }
+        CopyArgs { mode, path }
     }
 }
